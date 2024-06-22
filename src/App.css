@@ -2,37 +2,92 @@
   text-align: center;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+.map-container {
+  height: 100vh;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+.popup-content {
+  font-family: 'Arial', sans-serif;
+  font-size: 14px;
+  line-height: 1.5;
+  padding: 10px;
+  text-align: left;
+  border-radius: 4px;
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+.popupTitle {
+  font-size:14pt;
+  margin-bottom: 0;
+}
+
+.popupText {
+  font-size: 11pt;
+  margin-bottom: 0;
+  margin-top: 4px;
+}
+
+.popupText2 {
+  font-size: 10pt;
+  margin-bottom: 0;
+  margin-top: 4px;
+}
+
+.nav-bar {
   display: flex;
-  flex-direction: column;
+  justify-content: space-around;
   align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  background-color: rgba(12, 2, 67, 0.9);
   color: white;
 }
 
-.App-link {
-  color: #61dafb;
+.nav-button {
+  background: none;
+  border: none;
+  padding: 10px;
+  cursor: pointer;
+  color: white;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.nav-icon {
+  width: 34px;
+  height: 34px;
+  object-fit: contain;
+  color: white;
+}
+
+.mapboxgl-ctrl-top-left, .mapboxgl-ctrl-top-right {
+  top: 0px;
+}
+
+.mapboxgl-ctrl-bottom-left {
+  bottom: unset;
+  top: 4px;
+}
+
+.mapboxgl-ctrl-bottom-right {
+  bottom: unset;
+  top: 0px;
+}
+
+.weather-selector {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  z-index: 1;
+  background: white;
+  padding: 10px;
+  border-radius: 5px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.weather-selector label {
+  margin-right: 10px;
+}
+
+.weather-label {
+  position: absolute;
+  z-index: 1000; /* Ensure labels appear above other map layers */
 }
