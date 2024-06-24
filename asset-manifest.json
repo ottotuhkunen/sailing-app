@@ -1,15 +1,15 @@
 {
   "files": {
     "main.css": "/sailing-app/static/css/main.def63a55.css",
-    "main.js": "/sailing-app/static/js/main.47066839.js",
+    "main.js": "/sailing-app/static/js/main.78142285.js",
     "static/js/453.1159af81.chunk.js": "/sailing-app/static/js/453.1159af81.chunk.js",
     "index.html": "/sailing-app/index.html",
     "main.def63a55.css.map": "/sailing-app/static/css/main.def63a55.css.map",
-    "main.47066839.js.map": "/sailing-app/static/js/main.47066839.js.map",
+    "main.78142285.js.map": "/sailing-app/static/js/main.78142285.js.map",
     "453.1159af81.chunk.js.map": "/sailing-app/static/js/453.1159af81.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.def63a55.css",
-    "static/js/main.47066839.js"
+    "static/js/main.78142285.js"
   ]
 }
