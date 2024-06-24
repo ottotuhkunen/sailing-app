@@ -31,6 +31,6 @@ The map is only functional in Finnish territorial waters, lakes and rivers.
 
 ## Images
 
-![plot](./images/desktop1.png)
+<img src="./images/desktop1.png" alt="plot" style="max-width: 100%; height: auto;">
 
-![plot](./images/mobile1.jpeg)
+<img src="./images/mobile1.jpeg" alt="plot" style="max-width: 660px; height: auto;">
