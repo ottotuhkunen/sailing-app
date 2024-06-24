@@ -2,7 +2,7 @@
 
 export const loadAlueet = (map) => {
     // Load GeoJSON data
-    fetch('/src/alueet.geojson')
+    fetch(`${process.env.PUBLIC_URL}/src/alueet.geojson`)
       .then(response => response.json())
       .then(data => {
         // Add the GeoJSON source

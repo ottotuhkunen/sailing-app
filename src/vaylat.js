@@ -1,6 +1,6 @@
 import mapboxgl from 'mapbox-gl';
 
-const vaylatGeoJSON = '/src/vaylat.geojson'; // Adjust path as necessary
+const vaylatGeoJSON = `${process.env.PUBLIC_URL}/src/vaylat.geojson`; // Adjust path as necessary
 
 export const loadVaylat = (map) => {
   map.addSource('vaylat-source', {

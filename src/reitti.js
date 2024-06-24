@@ -1,7 +1,7 @@
 import mapboxgl from 'mapbox-gl';
 
-const raceGeoJSON = '/src/reitti.geojson'; // Path to your race route geojson
-const instructionsGeoJSON = '/src/reittiohjeet.geojson'; // Path to your instructions geojson
+const raceGeoJSON = `${process.env.PUBLIC_URL}/src/reitti.geojson`; // Path to your race route geojson
+const instructionsGeoJSON = `${process.env.PUBLIC_URL}/src/reittiohjeet.geojson`; // Path to your instructions geojson
 
 export const loadRace = (map) => {
   // Function to fetch and add race route

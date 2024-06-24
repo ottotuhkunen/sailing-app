@@ -49,7 +49,7 @@ const tyJnrNames = {
 
 export const loadTurvalaitteet = (map) => {
   // Load GeoJSON data
-  fetch('/src/turvalaitteet.geojson')
+  fetch(`${process.env.PUBLIC_URL}/src/turvalaitteet.geojson`)
     .then(response => {
       if (!response.ok) {
         throw new Error('Network response was not ok');
@@ -125,7 +125,7 @@ export const loadTurvalaitteet = (map) => {
 
       if (!loadedImages[iconFileName]) {
         loadedImages[iconFileName] = new Promise((resolve, reject) => {
-          map.loadImage(`/src/icons/${iconFileName}`, (error, image) => {
+          map.loadImage(`${process.env.PUBLIC_URL}/src/icons/${iconFileName}`, (error, image) => {
             if (error) {
               console.error(`Error loading image: ${iconFileName}`, error);
               reject(error);

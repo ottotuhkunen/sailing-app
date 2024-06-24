@@ -67,7 +67,7 @@ const shipTypeDescriptions = {
 const preloadIcons = (map) => {
   const promises = [];
   Object.entries(shipTypeIcons).forEach(([shipType, icon]) => {
-    const iconUrl = `/src/icons/vessels/${icon}`;
+    const iconUrl = `${process.env.PUBLIC_URL}/src/icons/vessels/${icon}`;
     const iconName = `ship-icon-${shipType}`;
 
     if (!map.hasImage(iconName)) { // Check if image is already loaded
@@ -139,7 +139,7 @@ export const loadLiikenne = async (map) => {
     // Register default icon for 'Ei_tietoa.png' if not already registered
     const defaultIconName = 'Ei_tietoa.png';
     if (!map.hasImage(defaultIconName)) {
-      const defaultIconUrl = `/src/icons/vessels/${defaultIconName}`;
+      const defaultIconUrl = `${process.env.PUBLIC_URL}/src/icons/vessels/${defaultIconName}`;
       map.loadImage(defaultIconUrl, (error, image) => {
         if (error) throw error;
         map.addImage(defaultIconName, image);
@@ -222,9 +222,9 @@ export const loadLiikenne = async (map) => {
 
       const popupContent = `
         <h3 class="popupTitle">${name}</h3>
+        <p class="popupText">${shipType}</p>
         <p class="popupText">Määränpää: ${destination}</p>
-        <p class="popupText">Nopeus (SOG): ${sog} kn</p>
-        <p class="popupText">Tyyppi: ${shipType}</p>
+        <p class="popupText">Nopeus: ${sog} kn</p>
         <p class="popupText">Kutsu: ${callSign}</p>
       `;
 

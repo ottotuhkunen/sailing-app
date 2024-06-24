@@ -1,70 +1,36 @@
-# Getting Started with Create React App
+# Sailing-app
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+This React JS app is in development stage. The purpose of this app is to help the crew during sailing races with necessary information. The map base is Mapbox GL and the data is fetched from Väylävirasto, Maanmittauslaitos, Ilmatieteenlaitos and Fintraffic.
 
-## Available Scripts
+[Link to current copy of app](https://ottotuhkunen.github.io/sailing-app/)
 
-In the project directory, you can run:
+The map is only functional in Finnish territorial waters, lakes and rivers.
 
-### `npm start`
+## Features
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+### Map data
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+- Seamarks, beacons, lighthouses etc. from Väylävirasto Open Data
+    - including names, position in relation to landmarks/islands and type of seamark
+- Sea routes and areas from Väylävirasto Open Data
+    - including published sea route depth and names
+- Marine traffic (AIS) from Fintraffic (Digitraffic)
+    - vessel names, type of vessel speed, direction and destination
+    - vessel position updates are under development
+- Detailed names of islands, reefs, shore and water bodies from Maanmittauslaitos
+- Ferry and cable ferry routes and line names from Maanmittauslaitos
 
-### `npm test`
+### Under development
+- Toggle buttons on the bottom menu bar are not functional. Only the recenter-button is currently working.
+- Current location and direction of travel (under development)
+    - currently the device location is weak and not updating on regular intervals
+- Ability to define a route (red dotted line)
+    - currently only possible with an imported GeoJSON file
+- Ability to define information boxes on the map (e.g. sailing race notes around the route)
+    - currently only possible with an importen GeoJSON file
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## Images
 
-### `npm run build`
+![plot](./images/desktop1.png)
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
-
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+![plot](./images/mobile1.jpeg)
