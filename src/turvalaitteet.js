@@ -48,6 +48,17 @@ const tyJnrNames = {
 };
 
 export const loadTurvalaitteet = (map) => {
+
+  // Attribution
+  const attributionControl = document.querySelector('.mapboxgl-ctrl-attrib-inner');
+  if (attributionControl) {
+    const customAttribution = document.createElement('a');
+    customAttribution.href = 'https://www.paikkatietohakemisto.fi/geonetwork/srv/fin/catalog.search#/metadata/bc585b68-837a-4609-85cd-3a17cac7c3de';
+    customAttribution.target = '_blank'; // new tab
+    customAttribution.innerHTML = ' © Väylävirasto vesiväyläaineisto';
+    attributionControl.appendChild(customAttribution);
+  }
+
   // Load GeoJSON data
   fetch(`${process.env.PUBLIC_URL}/src/turvalaitteet.geojson`)
     .then(response => {

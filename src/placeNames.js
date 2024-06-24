@@ -2,6 +2,7 @@
 import mapboxgl from 'mapbox-gl';
 
 const loadGeoJsonData = (map, url, sourceId, textColor, minZoom) => {
+
   fetch(url)
     .then(response => {
       if (!response.ok) {
@@ -39,6 +40,17 @@ const loadGeoJsonData = (map, url, sourceId, textColor, minZoom) => {
 };
 
 export const loadPlaceNames = (map) => {
+
+  // Attribution
+  const attributionControl = document.querySelector('.mapboxgl-ctrl-attrib-inner');
+  if (attributionControl) {
+    const customAttribution = document.createElement('a');
+    customAttribution.href = 'https://www.maanmittauslaitos.fi/kartat-ja-paikkatieto/aineistot-ja-rajapinnat/tuotekuvaukset/nimisto';
+    customAttribution.target = '_blank'; // new tab
+    customAttribution.innerHTML = ' © Maanmittauslaitos nimistö 2024';
+    attributionControl.appendChild(customAttribution);
+  }
+
   loadGeoJsonData(
     map,
     `${process.env.PUBLIC_URL}/src/placeNames/saariTaiLuoto.json`,

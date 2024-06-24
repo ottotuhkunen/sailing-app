@@ -224,6 +224,17 @@ const updateVessels = async (map) => {
 };
 
 export const loadLiikenne = async (map) => {
+
+  // Attribution
+  const attributionControl = document.querySelector('.mapboxgl-ctrl-attrib-inner');
+  if (attributionControl) {
+    const customAttribution = document.createElement('a');
+    customAttribution.href = 'https://www.digitraffic.fi/meriliikenne/';
+    customAttribution.target = '_blank'; // new tab
+    customAttribution.innerHTML = ' © Digitraffic';
+    attributionControl.appendChild(customAttribution);
+  }
+
   try {
     await preloadIcons(map);
 

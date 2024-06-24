@@ -17,7 +17,8 @@ function App() {
   const mapContainerRef = useRef(null);
   const mapInstanceRef = useRef(null);
   const userLocationMarkerRef = useRef(null);
-  const isFollowingRef = useRef(true);  // Use useRef to track following state
+  const isFollowingRef = useRef(true); 
+  const arrowRef = useRef(null); 
   const [userLocation, setUserLocation] = useState(null);
   const [isFollowing, setIsFollowing] = useState(true);
 
@@ -71,6 +72,10 @@ function App() {
 
     });
 
+    // update north-arrow rotation
+    mapInstanceRef.current.resetNorth = resetNorth;
+    mapInstanceRef.current.on('rotateend', throttle(updateArrowRotation, 100));
+
     return mapInstanceRef.current;
   };
 
@@ -112,6 +117,12 @@ function App() {
     );
   };
 
+  const updateArrowRotation = () => {
+    if (arrowRef.current) {
+      const rotation = mapInstanceRef.current.getBearing();
+      arrowRef.current.style.transform = `rotate(${rotation}deg)`;
+    }
+  };
 
   useEffect(() => {
     const mapInstance = initializeMap();
@@ -131,9 +142,32 @@ function App() {
     }
   };
 
+  const resetNorth = () => {
+    mapInstanceRef.current.easeTo({ 
+      bearing: 0,
+      pitch: 0,
+      duration: 1000,
+      pitchWithRotate: true
+    });
+  };
+
+  const throttle = (func, limit) => {
+    let inThrottle;
+    return function() {
+      const args = arguments;
+      const context = this;
+      if (!inThrottle) {
+        func.apply(context, args);
+        inThrottle = true;
+        setTimeout(() => (inThrottle = false), limit);
+      }
+    };
+  };
+
   return (
     <div className="App">
       <div id="map" className="map-container" ref={mapContainerRef} />
+      <div className="north-arrow" ref={arrowRef} onClick={() => mapInstanceRef.current.resetNorth()}>↑</div>
       <NavBar recenterMap={recenterMap} />
     </div>
   );
