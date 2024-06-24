@@ -16,8 +16,14 @@ mapboxgl.accessToken = 'pk.eyJ1Ijoib3R0b3R1aGt1bmVuIiwiYSI6ImNseG41dW9vaDAwNzQyc
 function App() {
   const mapContainerRef = useRef(null);
   const mapInstanceRef = useRef(null);
+  const userLocationMarkerRef = useRef(null);
+  const isFollowingRef = useRef(true);  // Use useRef to track following state
   const [userLocation, setUserLocation] = useState(null);
-  const [deviceOrientation, setDeviceOrientation] = useState({ alpha: 0 });
+  const [isFollowing, setIsFollowing] = useState(true);
+
+  useEffect(() => {
+    isFollowingRef.current = isFollowing;
+  }, [isFollowing]);
 
   // Function to initialize the map
   const initializeMap = () => {
@@ -49,45 +55,67 @@ function App() {
       loadLiikenne(mapInstanceRef.current);
       loadPlaceNames(mapInstanceRef.current);
 
-      navigator.geolocation.getCurrentPosition(
-        position => {
-          const { latitude, longitude } = position.coords;
-          setUserLocation([longitude, latitude]);
-          mapInstanceRef.current.setCenter([longitude, latitude]);
+      // Handle map drag and zoom events
+      const stopFollowing = () => {
+        // console.log('User interaction detected. Stopping follow mode.');
+        setIsFollowing(false);
+      };
 
+      mapInstanceRef.current.on('dragstart', stopFollowing);
+      mapInstanceRef.current.on('mousedown', stopFollowing);
+
+      updateUserLocation();
+      const locationUpdateInterval = setInterval(updateUserLocation, 5000); // Update every 5 seconds
+
+      return () => clearInterval(locationUpdateInterval);
+
+    });
+
+    return mapInstanceRef.current;
+  };
+
+  const updateUserLocation = () => {
+    // console.log("position updated");
+    navigator.geolocation.getCurrentPosition(
+      position => {
+        const { latitude, longitude } = position.coords;
+        setUserLocation([longitude, latitude]);
+
+        if (userLocationMarkerRef.current) {
+          userLocationMarkerRef.current.setLngLat([longitude, latitude]);
+        } else {
           const el = document.createElement('div');
           el.className = 'location-marker';
           el.style.backgroundImage = `url(${process.env.PUBLIC_URL}/src/icons/boat.png)`;
           el.style.width = '26px';
           el.style.height = '26px';
           el.style.backgroundSize = 'contain';
-          el.style.transform = `rotate(${deviceOrientation.alpha}deg)`;
 
-          new mapboxgl.Marker(el)
+          userLocationMarkerRef.current = new mapboxgl.Marker(el)
             .setLngLat([longitude, latitude])
             .addTo(mapInstanceRef.current);
-        },
-        error => {
-          console.error('Error getting user location:', error);
         }
-      );
-    });
 
-    return mapInstanceRef.current;
+        // console.log(isFollowingRef.current);
+
+        if (isFollowingRef.current) {
+          mapInstanceRef.current.flyTo({
+            center: [longitude, latitude],
+            essential: true
+          });
+        }
+      },
+      error => {
+        console.error('Error getting user location:', error);
+      },
+      { enableHighAccuracy: true }
+    );
   };
+
 
   useEffect(() => {
     const mapInstance = initializeMap();
-
-    const handleOrientation = (event) => {
-      if (!event.alpha) return;
-      setDeviceOrientation({ alpha: event.alpha });
-    };
-
-    window.addEventListener('deviceorientation', handleOrientation, true);
-
     return () => {
-      window.removeEventListener('deviceorientation', handleOrientation, true);
       mapInstance.remove();
     };
   }, []);
@@ -96,9 +124,10 @@ function App() {
     if (mapInstanceRef.current && userLocation) {
       mapInstanceRef.current.flyTo({
         center: userLocation,
-        zoom: 9,
         essential: true
       });
+      console.log("Recentering and starting to follow user location");
+      setIsFollowing(true);
     }
   };
 

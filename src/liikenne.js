@@ -5,7 +5,6 @@ mapboxgl.accessToken = 'pk.eyJ1Ijoib3R0b3R1aGt1bmVuIiwiYSI6ImNseG41dW9vaDAwNzQyc
 const vesselLocationsUrl = 'https://meri.digitraffic.fi/api/ais/v1/locations';
 const vesselDataUrl = 'https://meri.digitraffic.fi/api/ais/v1/vessels';
 
-// Ship types and corresponding icon filenames
 const shipTypeIcons = {
   0: 'Ei_tietoa.png',
   20: 'Patosiipialus.png',
@@ -88,78 +87,151 @@ const getShipTypeDescription = (shipType) => {
   return shipTypeDescriptions[shipType] || 'Tuntematon';
 };
 
-// Function to load vessel locations and data, and add them to the map
-export const loadLiikenne = async (map) => {
-  try {
-    // Preload all icons
-    await preloadIcons(map);
+let vesselPositions = {};
 
-    const [locationsData, vesselsData] = await Promise.all([
-      fetch(vesselLocationsUrl).then(response => response.json()),
-      fetch(vesselDataUrl).then(response => response.json())
-    ]);
+const fetchVesselData = async () => {
+  const [locationsData, vesselsData] = await Promise.all([
+    fetch(vesselLocationsUrl).then(response => response.json()),
+    fetch(vesselDataUrl).then(response => response.json())
+  ]);
 
-    if (!Array.isArray(locationsData.features) || !Array.isArray(vesselsData)) {
-      throw new Error('Invalid data format from API');
-    }
+  return { locationsData, vesselsData };
+};
 
-    // Create a map of vessels by MMSI for quick lookup
-    const vesselsByMMSI = vesselsData.reduce((acc, vessel) => {
-      acc[vessel.mmsi] = vessel;
-      return acc;
-    }, {});
+const updateVesselPositions = (map, locationsData, vesselsByMMSI) => {
+  const newPositions = {};
 
-    const features = locationsData.features.map(location => {
-      const { mmsi, geometry, properties } = location;
-      const vessel = vesselsByMMSI[mmsi];
-      if (vessel) {
-        const { name, destination, shipType, callSign } = vessel;
-        const iconName = `ship-icon-${shipType}`;
-        return {
-          type: 'Feature',
-          geometry,
-          properties: {
-            mmsi,
-            name,
-            destination,
-            shipType: getShipTypeDescription(shipType),
-            callSign,
-            sog: properties.sog,
-            heading: properties.heading,
-            icon: map.hasImage(iconName) ? iconName : 'Ei_tietoa.png' // Default icon
-          }
-        };
-      }
-      return null;
-    }).filter(feature => feature !== null);
+  const features = locationsData.features.map(location => {
+    const { mmsi, geometry, properties } = location;
+    const vessel = vesselsByMMSI[mmsi];
+    if (vessel) {
+      const { name, destination, shipType, callSign } = vessel;
+      const iconName = `ship-icon-${shipType}`;
 
-    const defaultIconName = 'Ei_tietoa.png';
-    if (!map.hasImage(defaultIconName)) {
-      const defaultIconUrl = `${process.env.PUBLIC_URL}/src/icons/vessels/${defaultIconName}`;
-      map.loadImage(defaultIconUrl, (error, image) => {
-        if (error) throw error;
-        map.addImage(defaultIconName, image);
-      });
-    }
+      const currentPos = geometry.coordinates;
+      const previousPos = vesselPositions[mmsi] ? vesselPositions[mmsi].coordinates : currentPos;
+      const heading = properties.heading;
+      const previousHeading = vesselPositions[mmsi] ? vesselPositions[mmsi].heading : heading;
 
-    // Add a GeoJSON source with cluster support
-    if (!map.getSource('vessels')) {
-      map.addSource('vessels', {
-        type: 'geojson',
-        data: {
-          type: 'FeatureCollection',
-          features
+      newPositions[mmsi] = {
+        coordinates: currentPos,
+        heading
+      };
+
+      return {
+        type: 'Feature',
+        geometry: {
+          type: 'Point',
+          coordinates: previousPos
         },
-        cluster: true,
-        clusterMaxZoom: 14, // Max zoom to cluster points on
-        clusterRadius: 50 // Radius of each cluster when clustering points
-      });
-    } else {
-      map.getSource('vessels').setData({
+        properties: {
+          mmsi,
+          name,
+          destination,
+          shipType: getShipTypeDescription(shipType),
+          callSign,
+          sog: properties.sog,
+          heading: previousHeading,
+          newHeading: heading,
+          newCoordinates: currentPos,
+          icon: map.hasImage(iconName) ? iconName : 'Ei_tietoa.png'
+        }
+      };
+    }
+    return null;
+  }).filter(feature => feature !== null);
+
+  vesselPositions = newPositions;
+
+  if (!map.getSource('vessels')) {
+    map.addSource('vessels', {
+      type: 'geojson',
+      data: {
         type: 'FeatureCollection',
         features
-      });
-    }
+      },
+      cluster: true,
+      clusterMaxZoom: 14,
+      clusterRadius: 50
+    });
+  } else {
+    map.getSource('vessels').setData({
+      type: 'FeatureCollection',
+      features
+    });
+  }
+
+  return features;
+};
+
+const animateVessels = (map) => {
+  const source = map.getSource('vessels');
+  const features = source._data.features;
+
+  features.forEach(feature => {
+    const { properties, geometry } = feature;
+    const { mmsi, newCoordinates, newHeading } = properties;
+
+    const previousPos = geometry.coordinates;
+    const newPos = newCoordinates;
+
+    const prevHeading = properties.heading;
+    const nextHeading = newHeading;
+
+    const interpolatePosition = (t) => {
+      return [
+        previousPos[0] + (newPos[0] - previousPos[0]) * t,
+        previousPos[1] + (newPos[1] - previousPos[1]) * t
+      ];
+    };
+
+    const interpolateHeading = (t) => {
+      return prevHeading + (nextHeading - prevHeading) * t;
+    };
+
+    let start = null;
+
+    const animate = (timestamp) => {
+      if (!start) start = timestamp;
+      const progress = Math.min((timestamp - start) / 1000, 1); // 1 second duration
+      feature.geometry.coordinates = interpolatePosition(progress);
+      feature.properties.heading = interpolateHeading(progress);
+
+      if (progress < 1) {
+        requestAnimationFrame(animate);
+      } else {
+        feature.geometry.coordinates = newPos;
+        feature.properties.heading = nextHeading;
+      }
+    };
+
+    requestAnimationFrame(animate);
+  });
+
+  source.setData(source._data);
+};
+
+const updateVessels = async (map) => {
+  console.log("Updating vessels");
+  const { locationsData, vesselsData } = await fetchVesselData();
+  const vesselsByMMSI = vesselsData.reduce((acc, vessel) => {
+    acc[vessel.mmsi] = vessel;
+    return acc;
+  }, {});
+
+  const features = updateVesselPositions(map, locationsData, vesselsByMMSI);
+  animateVessels(map);
+};
+
+export const loadLiikenne = async (map) => {
+  try {
+    await preloadIcons(map);
+
+    await updateVessels(map);
+
+    setInterval(() => {
+      updateVessels(map);
+    }, 20000);
 
     // Add cluster layer
     if (!map.getLayer('clusters')) {
@@ -206,7 +278,7 @@ export const loadLiikenne = async (map) => {
           'icon-image': ['get', 'icon'],
           'icon-size': 0.1,
           'icon-allow-overlap': true,
-          'icon-rotate': ['get', 'heading'] // Rotate icon based on heading
+          'icon-rotate': ['get', 'heading']
         }
       });
     }
@@ -242,4 +314,3 @@ export const loadLiikenne = async (map) => {
     console.error('Error loading vessel data:', error);
   }
 };
-
