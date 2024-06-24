@@ -22,8 +22,8 @@ function WeatherData({ map, selectedParameter }) {
             request: 'getFeature',
             storedquery_id: STORED_QUERY_OBSERVATION,
             parameters: parameters.join(','),
-            bbox: '19.0,59.0,31.0,70.0', // Bounding box for Finland
-            starttime: new Date(new Date().getTime() - 1 * 60 * 60 * 1000).toISOString(), // 24 hours ago
+            bbox: '19.0,59.0,31.0,70.0', // Finland
+            starttime: new Date(new Date().getTime() - 1 * 60 * 60 * 1000).toISOString(), // 1 hour ago
             endtime: new Date().toISOString(),
           }
         });
@@ -41,7 +41,7 @@ function WeatherData({ map, selectedParameter }) {
 
           return {
             location: {
-              coordinates: [parseFloat(pos[0]), parseFloat(pos[1])] // Ensure correct order of coordinates
+              coordinates: [parseFloat(pos[0]), parseFloat(pos[1])]
             },
             time,
             parameterName,
@@ -49,7 +49,7 @@ function WeatherData({ map, selectedParameter }) {
           };
         });
 
-        console.log('Parsed Weather Data:', parsedData); // Log parsed data to check structure
+        console.log('Parsed Weather Data:', parsedData);
 
         setWeatherData(parsedData);
 
@@ -97,7 +97,7 @@ function WeatherData({ map, selectedParameter }) {
       }
     });
 
-    // Clean up markers when component unmounts or when weatherData changes
+    // Clean up markers when weatherData changes
     return () => {
       document.querySelectorAll('.weather-label').forEach(marker => marker.remove());
     };

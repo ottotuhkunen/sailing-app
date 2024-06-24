@@ -1,14 +1,11 @@
 import mapboxgl from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
 
-// Set your Mapbox access token globally
 mapboxgl.accessToken = 'pk.eyJ1Ijoib3R0b3R1aGt1bmVuIiwiYSI6ImNseG41dW9vaDAwNzQycXNleWI1MmowbHcifQ.1ZMRPeOQ7z9GRzKILnFNAQ';
-
-// Define URLs for vessel locations and vessel data
 const vesselLocationsUrl = 'https://meri.digitraffic.fi/api/ais/v1/locations';
 const vesselDataUrl = 'https://meri.digitraffic.fi/api/ais/v1/vessels';
 
-// Define ship types and corresponding icon filenames
+// Ship types and corresponding icon filenames
 const shipTypeIcons = {
   0: 'Ei_tietoa.png',
   20: 'Patosiipialus.png',
@@ -70,7 +67,7 @@ const preloadIcons = (map) => {
     const iconUrl = `${process.env.PUBLIC_URL}/src/icons/vessels/${icon}`;
     const iconName = `ship-icon-${shipType}`;
 
-    if (!map.hasImage(iconName)) { // Check if image is already loaded
+    if (!map.hasImage(iconName)) {
       promises.push(new Promise((resolve, reject) => {
         map.loadImage(iconUrl, (error, image) => {
           if (error) {
@@ -117,7 +114,7 @@ export const loadLiikenne = async (map) => {
       const vessel = vesselsByMMSI[mmsi];
       if (vessel) {
         const { name, destination, shipType, callSign } = vessel;
-        const iconName = `ship-icon-${shipType}`; // Unique icon name based on ship type
+        const iconName = `ship-icon-${shipType}`;
         return {
           type: 'Feature',
           geometry,
@@ -129,14 +126,13 @@ export const loadLiikenne = async (map) => {
             callSign,
             sog: properties.sog,
             heading: properties.heading,
-            icon: map.hasImage(iconName) ? iconName : 'Ei_tietoa.png' // Default icon if not loaded
+            icon: map.hasImage(iconName) ? iconName : 'Ei_tietoa.png' // Default icon
           }
         };
       }
       return null;
     }).filter(feature => feature !== null);
 
-    // Register default icon for 'Ei_tietoa.png' if not already registered
     const defaultIconName = 'Ei_tietoa.png';
     if (!map.hasImage(defaultIconName)) {
       const defaultIconUrl = `${process.env.PUBLIC_URL}/src/icons/vessels/${defaultIconName}`;
@@ -156,7 +152,7 @@ export const loadLiikenne = async (map) => {
         },
         cluster: true,
         clusterMaxZoom: 14, // Max zoom to cluster points on
-        clusterRadius: 50 // Radius of each cluster when clustering points (defaults to 50)
+        clusterRadius: 50 // Radius of each cluster when clustering points
       });
     } else {
       map.getSource('vessels').setData({
@@ -234,12 +230,10 @@ export const loadLiikenne = async (map) => {
         .addTo(map);
     });
 
-    // Change the cursor to a pointer when the mouse is over the unclustered points
+    // Cursor to a pointer when the mouse is over the unclustered points
     map.on('mouseenter', 'unclustered-point', () => {
       map.getCanvas().style.cursor = 'pointer';
     });
-
-    // Change it back to default when it leaves
     map.on('mouseleave', 'unclustered-point', () => {
       map.getCanvas().style.cursor = '';
     });

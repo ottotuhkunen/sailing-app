@@ -1,6 +1,6 @@
 import mapboxgl from 'mapbox-gl';
 
-const vaylatGeoJSON = `${process.env.PUBLIC_URL}/src/vaylat.geojson`; // Adjust path as necessary
+const vaylatGeoJSON = `${process.env.PUBLIC_URL}/src/vaylat.geojson`;
 
 export const loadVaylat = (map) => {
   map.addSource('vaylat-source', {
@@ -8,7 +8,7 @@ export const loadVaylat = (map) => {
     data: vaylatGeoJSON
   });
 
-  // Add a layer to render the vaylat features
+  // Add a layer to render väylät
   map.addLayer({
     id: 'vaylat-layer',
     type: 'line',
@@ -18,7 +18,7 @@ export const loadVaylat = (map) => {
       'line-cap': 'round'
     },
     paint: {
-      'line-opacity': 0.8, // Default opacity for all features
+      'line-opacity': 0.8,
       'line-width': [
         'case',
         ['==', ['get', 'valaistus'], 1],  // If valaistus is 1
@@ -29,11 +29,9 @@ export const loadVaylat = (map) => {
         'case',
         ['==', ['get', 'valaistus'], 1], 
         'black',                            // Use black color
-        'white'                               // Otherwise, use white color
+        'white'                             // Otherwise, use white color
       ]
     },
-    // Set a higher z-index to ensure this layer is on top of others
-    // Adjust the 'below' property based on your existing layer IDs
     'below': 'labels'
   });
 
@@ -55,7 +53,7 @@ export const loadVaylat = (map) => {
   map.on('click', 'vaylat-layer', (e) => {
     const features = map.queryRenderedFeatures(e.point, {
       layers: ['vaylat-layer'],
-      radius: 10 // Increase the radius to increase hitbox size
+      radius: 10 // Increase hitbox size
     });
 
     if (!features.length) {
@@ -75,18 +73,16 @@ export const loadVaylat = (map) => {
       .addTo(map);
   });
 
-  // Hover cursor pointer when over vaylat features
+  // Hover cursor pointer when over väylät
   map.on('mouseenter', 'vaylat-layer', () => {
     map.getCanvas().style.cursor = 'pointer';
   });
-
-  // Change cursor back to default on mouse leave
   map.on('mouseleave', 'vaylat-layer', () => {
     map.getCanvas().style.cursor = '';
   });
 };
 
-// Function to get the name of vaylalaji based on its code
+// Function to get väylälaji
 const getVaylalajiName = (code) => {
   switch (code) {
     case 1:

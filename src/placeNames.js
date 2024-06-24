@@ -1,5 +1,4 @@
 // placeNames.js
-
 import mapboxgl from 'mapbox-gl';
 
 const loadGeoJsonData = (map, url, sourceId, textColor, minZoom) => {
@@ -22,7 +21,7 @@ const loadGeoJsonData = (map, url, sourceId, textColor, minZoom) => {
         type: 'symbol',
         source: sourceId,
         layout: {
-          'text-field': ['get', 'spelling'], // Ensure 'spelling' matches your GeoJSON property
+          'text-field': ['get', 'spelling'],
           'text-font': ['DIN Offc Pro Medium', 'Arial Unicode MS Bold'],
           'text-size': 12,
         },
@@ -33,8 +32,6 @@ const loadGeoJsonData = (map, url, sourceId, textColor, minZoom) => {
         },
         minzoom: minZoom,
       });
-
-      // Optional: Add event listeners or additional logic as needed
     })
     .catch(error => {
       console.error(`Error loading ${sourceId} data:`, error);
@@ -46,7 +43,7 @@ export const loadPlaceNames = (map) => {
     map,
     `${process.env.PUBLIC_URL}/src/placeNames/saariTaiLuoto.json`,
     'saariTaiLuoto',
-    '#333', // Black text color
+    '#333', // Black
     10
   );
 
@@ -54,7 +51,7 @@ export const loadPlaceNames = (map) => {
     map,
     `${process.env.PUBLIC_URL}/src/placeNames/lauttaJaLossi.geojson`,
     'lauttaJaLossi',
-    '#CC5500', // Orange text color
+    '#CC5500', // Orange
     10
   );
 
@@ -62,7 +59,7 @@ export const loadPlaceNames = (map) => {
     map,
     `${process.env.PUBLIC_URL}/src/placeNames/merialueet.json`,
     'merialueet',
-    '#0000FF', // Blue text color
+    '#0000FF', // Blue
     10
   );
 };

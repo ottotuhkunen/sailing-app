@@ -156,7 +156,7 @@ export const loadTurvalaitteet = (map) => {
             filter: ['all', ['==', 'navl_tyyp', navl_tyyp], ['==', 'ty_jnr', ty_jnr]],
             layout: {
               'icon-image': iconName,
-              'icon-size': 0.2, // Adjust icon size as necessary
+              'icon-size': 0.2,
               'icon-allow-overlap': true,
               'icon-anchor': 'bottom'
             },
