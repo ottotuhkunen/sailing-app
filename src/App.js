@@ -9,7 +9,7 @@ import { loadRace } from './reitti';
 import { loadLiikenne } from './liikenne';
 import NavBar from './NavBar';
 import { loadPlaceNames } from './placeNames';
-import { initializeLine, drawLine, clearLine } from './line'; // Import line functions
+import { initializeLine, drawLine, clearLine } from './line';
 
 mapboxgl.accessToken = 'pk.eyJ1Ijoib3R0b3R1aGt1bmVuIiwiYSI6ImNseG41dW9vaDAwNzQycXNleWI1MmowbHcifQ.1ZMRPeOQ7z9GRzKILnFNAQ';
 
@@ -19,6 +19,7 @@ function App() {
   const geolocateControlRef = useRef(null);
   const [userLocation, setUserLocation] = useState(null);
   const [info, setInfo] = useState(null);
+  const [isRulerMode, setIsRulerMode] = useState(false);
 
   // Function to initialize the map
   const initializeMap = () => {
@@ -80,7 +81,7 @@ function App() {
   useEffect(() => {
     const mapInstance = mapInstanceRef.current;
 
-    mapInstance.on('click', (e) => {
+    const handleClick = (e) => {
       if (userLocation) {
         const clickedPosition = [e.lngLat.lng, e.lngLat.lat];
         drawLine(userLocation, clickedPosition);
@@ -88,12 +89,18 @@ function App() {
         const distance = parseFloat(calculateDistance(userLocation, clickedPosition)).toFixed(1);
         setInfo({ bearing, distance });
       }
-    });
+    };
+
+    if (isRulerMode) {
+      mapInstance.on('click', handleClick);
+    } else {
+      mapInstance.off('click', handleClick);
+    }
 
     return () => {
-      mapInstance.off('click');
+      mapInstance.off('click', handleClick);
     };
-  }, [userLocation]);
+  }, [isRulerMode, userLocation]);
 
   const calculateBearing = (start, end) => {
     const startLat = start[1] * (Math.PI / 180);
@@ -102,8 +109,8 @@ function App() {
     const endLng = end[0] * (Math.PI / 180);
 
     const dLng = endLng - startLng;
-    const y = Math.sin(dLng) * Math.cos(endLat);
-    const x = Math.cos(startLat) * Math.sin(endLat) - Math.sin(startLat) * Math.cos(endLat) * Math.cos(dLng);
+    const y = Math.sin(dLng) * (Math.cos(endLat));
+    const x = (Math.cos(startLat) * Math.sin(endLat)) - (Math.sin(startLat) * Math.cos(endLat) * Math.cos(dLng));
 
     let bearing = Math.atan2(y, x) * (180 / Math.PI);
     bearing = (bearing + 360) % 360;
@@ -133,10 +140,20 @@ function App() {
     setInfo(null);
   };
 
+  const toggleRulerMode = () => {
+    setIsRulerMode(!isRulerMode);
+    if (isRulerMode) {
+      clearLineAndInfo();
+    }
+  };
+
   return (
     <div className="App">
       <div id="map" className="map-container" ref={mapContainerRef} />
       <NavBar />
+      <button className={`ruler-button ${isRulerMode ? 'active' : ''}`} onClick={toggleRulerMode}>
+        <img src={`${process.env.PUBLIC_URL}/src/icons/ruler.png`} alt="Ruler" />
+      </button>
       {info && (
         <div className="info-box">
           <p>Suunta: {info.bearing}° Matka: {info.distance} NM</p>

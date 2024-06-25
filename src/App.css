@@ -177,3 +177,30 @@
 .info-box button:hover {
   background-color: #0056b3;
 }
+
+.ruler-button {
+  position: absolute;
+  top: 181px;
+  right: 10px;
+  padding: 0;
+  background-color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  width: 29px;
+  height: 29px;
+  box-shadow: 0 0 0 2px rgba(0,0,0,.1);
+}
+
+.ruler-button img {
+  width: 24px;
+  height: 24px;
+}
+
+.ruler-button.active {
+  background-color: #75e18e;
+}
+
+.ruler-button:hover {
+  background-color: #ececec;
+}
