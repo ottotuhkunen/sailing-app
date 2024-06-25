@@ -16,7 +16,7 @@ export const loadAlueet = (map) => {
   
         // Add layer for rendering polygons
         map.addLayer({
-          id: 'alueet-layer',
+          id: 'vayla-alueet-layer',
           type: 'fill',
           source: 'alueet',
           paint: {

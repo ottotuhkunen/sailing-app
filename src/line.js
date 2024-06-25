@@ -1,12 +1,12 @@
-let map;  // Define map variable to store Mapbox map instance
+let map;
 
 export const initializeLine = (mapInstance) => {
-  map = mapInstance;  // Set the map variable to the provided map instance
+  map = mapInstance;  // Map instance
 };
 
 export const drawLine = (start, end) => {
   if (map) {
-    clearLine();  // Clear any existing line and dot layers
+    clearLine();  // Clear any existing line
 
     // Add source for the line
     map.addSource('line-source', {
@@ -20,7 +20,7 @@ export const drawLine = (start, end) => {
       }
     });
 
-    // Add layer for the line
+    // Line layer
     map.addLayer({
       id: 'line-layer',
       type: 'line',
@@ -32,11 +32,11 @@ export const drawLine = (start, end) => {
       paint: {
         'line-color': 'black',
         'line-width': 2,
-        'line-dasharray': [2, 2]  // Adjust for different dash patterns
+        'line-dasharray': [2, 2]
       }
     });
 
-    // Add dot layer at the end of the line
+    // Dot layer
     map.addLayer({
       id: 'end-dot',
       type: 'circle',

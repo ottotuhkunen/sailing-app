@@ -101,10 +101,15 @@ const fetchVesselData = async () => {
 const updateVesselPositions = (map, locationsData, vesselsByMMSI) => {
   const newPositions = {};
 
+  const now = Date.now();
+  const THIRTY_MINUTES_IN_MS = 30 * 60 * 1000;
+
   const features = locationsData.features.map(location => {
     const { mmsi, geometry, properties } = location;
     const vessel = vesselsByMMSI[mmsi];
-    if (vessel) {
+    const lastUpdate = properties.timestampExternal;
+
+    if (vessel && (now - lastUpdate) <= THIRTY_MINUTES_IN_MS) {
       const { name, destination, shipType, callSign } = vessel;
       const iconName = `ship-icon-${shipType}`;
 
@@ -134,6 +139,7 @@ const updateVesselPositions = (map, locationsData, vesselsByMMSI) => {
           heading: previousHeading,
           newHeading: heading,
           newCoordinates: currentPos,
+          lastUpdate,
           icon: map.hasImage(iconName) ? iconName : 'Ei_tietoa.png'
         }
       };
@@ -245,9 +251,9 @@ export const loadLiikenne = async (map) => {
     }, 20000);
 
     // Add cluster layer
-    if (!map.getLayer('clusters')) {
+    if (!map.getLayer('liikenne-clusters')) {
       map.addLayer({
-        id: 'clusters',
+        id: 'liikenne-clusters',
         type: 'circle',
         source: 'vessels',
         filter: ['has', 'point_count'],
@@ -266,7 +272,7 @@ export const loadLiikenne = async (map) => {
       });
 
       map.addLayer({
-        id: 'cluster-count',
+        id: 'liikenne-cluster-count',
         type: 'symbol',
         source: 'vessels',
         filter: ['has', 'point_count'],
@@ -279,9 +285,9 @@ export const loadLiikenne = async (map) => {
     }
 
     // Add unclustered point layer
-    if (!map.getLayer('unclustered-point')) {
+    if (!map.getLayer('liikenne-unclustered-point')) {
       map.addLayer({
-        id: 'unclustered-point',
+        id: 'liikenne-unclustered-point',
         type: 'symbol',
         source: 'vessels',
         filter: ['!', ['has', 'point_count']],
@@ -295,16 +301,19 @@ export const loadLiikenne = async (map) => {
     }
 
     // Add a click event listener for the unclustered points
-    map.on('click', 'unclustered-point', (e) => {
-      const { name, destination, shipType, callSign, sog } = e.features[0].properties;
+    map.on('click', 'liikenne-unclustered-point', (e) => {
+      const { name, destination, shipType, callSign, sog, lastUpdate } = e.features[0].properties;
       const coordinates = e.features[0].geometry.coordinates.slice();
 
+      const now = Date.now();
+      const timeDiff = Math.floor((now - lastUpdate) / (1000 * 60)); // difference in minutes
       const popupContent = `
         <h3 class="popupTitle">${name}</h3>
         <p class="popupText">${shipType}</p>
         <p class="popupText">Määränpää: ${destination}</p>
         <p class="popupText">Nopeus: ${sog} kn</p>
         <p class="popupText">Kutsu: ${callSign}</p>
+        <p class="popupText">Päivitetty: -${timeDiff} min.</p>
       `;
 
       new mapboxgl.Popup({ closeOnClick: true })
@@ -314,10 +323,10 @@ export const loadLiikenne = async (map) => {
     });
 
     // Cursor to a pointer when the mouse is over the unclustered points
-    map.on('mouseenter', 'unclustered-point', () => {
+    map.on('mouseenter', 'liikenne-unclustered-point', () => {
       map.getCanvas().style.cursor = 'pointer';
     });
-    map.on('mouseleave', 'unclustered-point', () => {
+    map.on('mouseleave', 'liikenne-unclustered-point', () => {
       map.getCanvas().style.cursor = '';
     });
 

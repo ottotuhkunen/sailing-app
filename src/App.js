@@ -2,12 +2,12 @@ import React, { useEffect, useState, useRef } from 'react';
 import './App.css';
 import mapboxgl from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
+import NavBar from './NavBar';
 import { loadTurvalaitteet } from './turvalaitteet';
 import { loadAlueet } from './alueet';
 import { loadVaylat } from './vaylat';
 import { loadRace } from './reitti';
 import { loadLiikenne } from './liikenne';
-import NavBar from './NavBar';
 import { loadPlaceNames } from './placeNames';
 import { initializeLine, drawLine, clearLine } from './line';
 
@@ -20,6 +20,8 @@ function App() {
   const [userLocation, setUserLocation] = useState(null);
   const [info, setInfo] = useState(null);
   const [isRulerMode, setIsRulerMode] = useState(false);
+  const [mapLoaded, setMapLoaded] = useState(false);
+
 
   // Function to initialize the map
   const initializeMap = () => {
@@ -33,6 +35,8 @@ function App() {
     });
 
     mapInstanceRef.current.on('load', () => {
+      setMapLoaded(true);
+
       loadTurvalaitteet(mapInstanceRef.current);
       loadAlueet(mapInstanceRef.current);
       loadVaylat(mapInstanceRef.current);
@@ -130,8 +134,8 @@ function App() {
       Math.sin(dLng / 2) * Math.sin(dLng / 2) * Math.cos(lat1) * Math.cos(lat2);
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 
-    const distance = R * c; // Distance in kilometers
-    const distanceNauticalMiles = distance * 0.539957; // Convert to nautical miles
+    const distance = R * c; // Distance in km
+    const distanceNauticalMiles = distance * 0.539957; // Convert to NM
     return distanceNauticalMiles.toFixed(2);
   };
 
@@ -141,7 +145,7 @@ function App() {
   };
 
   const toggleRulerMode = () => {
-    setIsRulerMode(!isRulerMode);
+    setIsRulerMode(!isRulerMode); // set to opposite
     if (isRulerMode) {
       clearLineAndInfo();
     }
@@ -150,7 +154,7 @@ function App() {
   return (
     <div className="App">
       <div id="map" className="map-container" ref={mapContainerRef} />
-      <NavBar />
+      {mapLoaded && <NavBar map={mapInstanceRef.current} />}
       <button className={`ruler-button ${isRulerMode ? 'active' : ''}`} onClick={toggleRulerMode}>
         <img src={`${process.env.PUBLIC_URL}/src/icons/ruler.png`} alt="Ruler" />
       </button>
