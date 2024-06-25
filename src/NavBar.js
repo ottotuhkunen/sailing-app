@@ -13,9 +13,6 @@ const NavBar = ({ recenterMap }) => {
       <button id='toggleReittiButton' className="nav-button">
         <img src={`${process.env.PUBLIC_URL}/src/icons/navbar/navIcon5.png`} alt={`nav-icon`} className="nav-icon" />
       </button>
-      <button id='recenterButton' className="nav-button" onClick={recenterMap}>
-        <img src={`${process.env.PUBLIC_URL}/src/icons/navbar/navIcon4.png`} alt={`nav-icon`} className="nav-icon" />
-      </button>
       <button id='presetButton' className="nav-button">
         <img src={`${process.env.PUBLIC_URL}/src/icons/navbar/navIcon6.png`} alt={`nav-icon`} className="nav-icon" />
       </button>

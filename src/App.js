@@ -1,4 +1,3 @@
-// App.js
 import React, { useEffect, useState, useRef } from 'react';
 import './App.css';
 import mapboxgl from 'mapbox-gl';
@@ -9,22 +8,17 @@ import { loadVaylat } from './vaylat';
 import { loadRace } from './reitti';
 import { loadLiikenne } from './liikenne';
 import NavBar from './NavBar';
-import { loadPlaceNames } from './placeNames'; 
+import { loadPlaceNames } from './placeNames';
+import { initializeLine, drawLine, clearLine } from './line'; // Import line functions
 
 mapboxgl.accessToken = 'pk.eyJ1Ijoib3R0b3R1aGt1bmVuIiwiYSI6ImNseG41dW9vaDAwNzQycXNleWI1MmowbHcifQ.1ZMRPeOQ7z9GRzKILnFNAQ';
 
 function App() {
   const mapContainerRef = useRef(null);
   const mapInstanceRef = useRef(null);
-  const userLocationMarkerRef = useRef(null);
-  const isFollowingRef = useRef(true); 
-  const arrowRef = useRef(null); 
+  const geolocateControlRef = useRef(null);
   const [userLocation, setUserLocation] = useState(null);
-  const [isFollowing, setIsFollowing] = useState(true);
-
-  useEffect(() => {
-    isFollowingRef.current = isFollowing;
-  }, [isFollowing]);
+  const [info, setInfo] = useState(null);
 
   // Function to initialize the map
   const initializeMap = () => {
@@ -32,96 +26,48 @@ function App() {
       container: mapContainerRef.current,
       style: 'mapbox://styles/ottotuhkunen/clxn5yadi002m01r0896chtyt',
       center: [22.2240, 60.1789],
-      zoom: 9
+      zoom: 9,
+      pitchWithRotate: false,
+      pitch: 0
     });
 
     mapInstanceRef.current.on('load', () => {
-      // const cottageMarkerEl = document.createElement('div');
-      // cottageMarkerEl.className = 'cottage-marker';
-      // cottageMarkerEl.style.backgroundImage = `url(${process.env.PUBLIC_URL}/src/icons/cottage.png)`;
-      // cottageMarkerEl.style.width = '24px';
-      // cottageMarkerEl.style.height = '24px';
-      // cottageMarkerEl.style.backgroundSize = 'contain';
-
-      // new mapboxgl.Marker({
-        // element: cottageMarkerEl,
-      // })
-      // .setLngLat([22.224016, 60.178941])
-      // .addTo(mapInstanceRef.current);
-
       loadTurvalaitteet(mapInstanceRef.current);
       loadAlueet(mapInstanceRef.current);
       loadVaylat(mapInstanceRef.current);
-      // loadRace(mapInstanceRef.current);
+      loadRace(mapInstanceRef.current);
       loadLiikenne(mapInstanceRef.current);
       loadPlaceNames(mapInstanceRef.current);
 
-      // Handle map drag and zoom events
-      const stopFollowing = () => {
-        // console.log('User interaction detected. Stopping follow mode.');
-        setIsFollowing(false);
-      };
+      // Add zoom and rotation controls to the map.
+      mapInstanceRef.current.addControl(new mapboxgl.NavigationControl());
 
-      mapInstanceRef.current.on('dragstart', stopFollowing);
-      mapInstanceRef.current.on('mousedown', stopFollowing);
+      // Add geolocate control to the map.
+      geolocateControlRef.current = new mapboxgl.GeolocateControl({
+        positionOptions: {
+          enableHighAccuracy: true
+        },
+        fitBoundsOptions: {
+          maxZoom: 15
+        },
+        trackUserLocation: 'compass',
+        showUserHeading: true,
+        showAccuracyCircle: false
+      });
 
-      updateUserLocation();
-      const locationUpdateInterval = setInterval(updateUserLocation, 5000); // Update every 5 seconds
+      mapInstanceRef.current.addControl(geolocateControlRef.current);
 
-      return () => clearInterval(locationUpdateInterval);
+      // Event listener for geolocate control
+      geolocateControlRef.current.on('geolocate', (e) => {
+        const userPosition = [e.coords.longitude, e.coords.latitude];
+        setUserLocation(userPosition);
+      });
 
+      // Initialize line functions with map instance
+      initializeLine(mapInstanceRef.current);
     });
 
-    // update north-arrow rotation
-    mapInstanceRef.current.resetNorth = resetNorth;
-    mapInstanceRef.current.on('rotateend', throttle(updateArrowRotation, 100));
-
     return mapInstanceRef.current;
-  };
-
-  const updateUserLocation = () => {
-    // console.log("position updated");
-    navigator.geolocation.getCurrentPosition(
-      position => {
-        const { latitude, longitude } = position.coords;
-        setUserLocation([longitude, latitude]);
-
-        if (userLocationMarkerRef.current) {
-          userLocationMarkerRef.current.setLngLat([longitude, latitude]);
-        } else {
-          const el = document.createElement('div');
-          el.className = 'location-marker';
-          el.style.backgroundImage = `url(${process.env.PUBLIC_URL}/src/icons/boat.png)`;
-          el.style.width = '26px';
-          el.style.height = '26px';
-          el.style.backgroundSize = 'contain';
-
-          userLocationMarkerRef.current = new mapboxgl.Marker(el)
-            .setLngLat([longitude, latitude])
-            .addTo(mapInstanceRef.current);
-        }
-
-        // console.log(isFollowingRef.current);
-
-        if (isFollowingRef.current) {
-          mapInstanceRef.current.flyTo({
-            center: [longitude, latitude],
-            essential: true
-          });
-        }
-      },
-      error => {
-        console.error('Error getting user location:', error);
-      },
-      { enableHighAccuracy: true }
-    );
-  };
-
-  const updateArrowRotation = () => {
-    if (arrowRef.current) {
-      const rotation = mapInstanceRef.current.getBearing();
-      arrowRef.current.style.transform = `rotate(${rotation}deg)`;
-    }
   };
 
   useEffect(() => {
@@ -131,44 +77,72 @@ function App() {
     };
   }, []);
 
-  const recenterMap = () => {
-    if (mapInstanceRef.current && userLocation) {
-      mapInstanceRef.current.flyTo({
-        center: userLocation,
-        essential: true
-      });
-      console.log("Recentering and starting to follow user location");
-      setIsFollowing(true);
-    }
-  };
+  useEffect(() => {
+    const mapInstance = mapInstanceRef.current;
 
-  const resetNorth = () => {
-    mapInstanceRef.current.easeTo({ 
-      bearing: 0,
-      pitch: 0,
-      duration: 1000,
-      pitchWithRotate: true
-    });
-  };
-
-  const throttle = (func, limit) => {
-    let inThrottle;
-    return function() {
-      const args = arguments;
-      const context = this;
-      if (!inThrottle) {
-        func.apply(context, args);
-        inThrottle = true;
-        setTimeout(() => (inThrottle = false), limit);
+    mapInstance.on('click', (e) => {
+      if (userLocation) {
+        const clickedPosition = [e.lngLat.lng, e.lngLat.lat];
+        drawLine(userLocation, clickedPosition);
+        const bearing = parseFloat(calculateBearing(userLocation, clickedPosition)).toFixed(1);
+        const distance = parseFloat(calculateDistance(userLocation, clickedPosition)).toFixed(1);
+        setInfo({ bearing, distance });
       }
+    });
+
+    return () => {
+      mapInstance.off('click');
     };
+  }, [userLocation]);
+
+  const calculateBearing = (start, end) => {
+    const startLat = start[1] * (Math.PI / 180);
+    const startLng = start[0] * (Math.PI / 180);
+    const endLat = end[1] * (Math.PI / 180);
+    const endLng = end[0] * (Math.PI / 180);
+
+    const dLng = endLng - startLng;
+    const y = Math.sin(dLng) * Math.cos(endLat);
+    const x = Math.cos(startLat) * Math.sin(endLat) - Math.sin(startLat) * Math.cos(endLat) * Math.cos(dLng);
+
+    let bearing = Math.atan2(y, x) * (180 / Math.PI);
+    bearing = (bearing + 360) % 360;
+    return bearing.toFixed(2);
+  };
+
+  const calculateDistance = (start, end) => {
+    const R = 6371; // Radius of the Earth in kilometers
+    const dLat = (end[1] - start[1]) * (Math.PI / 180);
+    const dLng = (end[0] - start[0]) * (Math.PI / 180);
+
+    const lat1 = start[1] * (Math.PI / 180);
+    const lat2 = end[1] * (Math.PI / 180);
+
+    const a =
+      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.sin(dLng / 2) * Math.sin(dLng / 2) * Math.cos(lat1) * Math.cos(lat2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
+    const distance = R * c; // Distance in kilometers
+    const distanceNauticalMiles = distance * 0.539957; // Convert to nautical miles
+    return distanceNauticalMiles.toFixed(2);
+  };
+
+  const clearLineAndInfo = () => {
+    clearLine();
+    setInfo(null);
   };
 
   return (
     <div className="App">
       <div id="map" className="map-container" ref={mapContainerRef} />
-      <div className="north-arrow" ref={arrowRef} onClick={() => mapInstanceRef.current.resetNorth()}>↑</div>
-      <NavBar recenterMap={recenterMap} />
+      <NavBar />
+      {info && (
+        <div className="info-box">
+          <p>Suunta: {info.bearing}° Matka: {info.distance} NM</p>
+          <button onClick={clearLineAndInfo}>Poista mitta</button>
+        </div>
+      )}
     </div>
   );
 }

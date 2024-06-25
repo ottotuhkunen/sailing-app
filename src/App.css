@@ -119,25 +119,61 @@
   opacity: 0.8;
 }
 
-.north-arrow {
-  position: absolute;
-  top: 46px;
-  right: 8px;
-  width: 30px;
-  height: 30px;
-  background-color: rgba(12, 2, 67, 0.9);
-  color: white;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  font-size: 18px;
-  font-weight: bold;
-  user-select: none;
+.mapboxgl-ctrl-top-right {
+  margin-top: 36px;
 }
 
-.north-arrow:hover {
-  background-color: #ffffff;
-  color: rgba(12, 2, 67)
+/* Override the default user location marker */
+.mapboxgl-user-location-dot {
+  background-image: url('../public/src/icons/boat.png') !important;
+  background-size: contain !important;
+  background-repeat: no-repeat !important;
+  background-position: center !important;
+  background-color: transparent !important;  /* Ensure only the color is transparent */
+  width: 28px !important;  /* Adjust size as needed */
+  height: 28px !important; /* Adjust size as needed */
+  border-radius: 0 !important;  /* Remove default border radius */
+  box-shadow: none !important;  /* Remove default shadow */
+}
+
+.mapboxgl-user-location-dot::before {
+  display: none !important;
+}
+
+.mapboxgl-user-location-dot::after {
+  display: none !important;
+}
+
+.mapboxgl-user-location-heading {
+  display: none !important;
+}
+
+.info-box {
+  position: absolute;
+  top: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: rgba(12, 2, 67, 0.9);
+  padding: 10px;
+  border-radius: 4px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  color: white;
+}
+
+.info-box p {
+  margin: 0;
+}
+
+.info-box button {
+  margin-top: 10px;
+  padding: 5px 10px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+}
+
+.info-box button:hover {
+  background-color: #0056b3;
 }
