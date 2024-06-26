@@ -1,15 +1,26 @@
 {
   "files": {
     "main.css": "/sailing-app/static/css/main.a32f1579.css",
-    "main.js": "/sailing-app/static/js/main.da654608.js",
+    "main.js": "/sailing-app/static/js/main.1a930f08.js",
     "static/js/453.1159af81.chunk.js": "/sailing-app/static/js/453.1159af81.chunk.js",
+    "static/media/vesikivet.geojson": "/sailing-app/static/media/vesikivet.b2b3ba6a676aec9a80a0.geojson",
+    "static/media/turvalaitteet.geojson": "/sailing-app/static/media/turvalaitteet.8074ac53468685067fbe.geojson",
+    "static/media/saariTaiLuoto.geojson": "/sailing-app/static/media/saariTaiLuoto.00dae2dfd1c38996a591.geojson",
+    "static/media/vaylat.geojson": "/sailing-app/static/media/vaylat.bb94940ab7f9f38744ce.geojson",
+    "static/media/alueet.geojson": "/sailing-app/static/media/alueet.922b3d45b7128923113e.geojson",
+    "static/media/valosektorit.geojson": "/sailing-app/static/media/valosektorit.4c0ed120ce1a6dcf9eba.geojson",
+    "static/media/merialueet.geojson": "/sailing-app/static/media/merialueet.e7add305311146b82cf8.geojson",
+    "static/media/taululinjat.geojson": "/sailing-app/static/media/taululinjat.ff1959d29092740907d3.geojson",
+    "static/media/lauttaJaLossi.geojson": "/sailing-app/static/media/lauttaJaLossi.50477d9c5626f250b88a.geojson",
+    "static/media/reittiohjeet.geojson": "/sailing-app/static/media/reittiohjeet.10f14b8ccdf49f0f0ece.geojson",
+    "static/media/reitti.geojson": "/sailing-app/static/media/reitti.8d254a24936dbb617ceb.geojson",
     "index.html": "/sailing-app/index.html",
     "main.a32f1579.css.map": "/sailing-app/static/css/main.a32f1579.css.map",
-    "main.da654608.js.map": "/sailing-app/static/js/main.da654608.js.map",
+    "main.1a930f08.js.map": "/sailing-app/static/js/main.1a930f08.js.map",
     "453.1159af81.chunk.js.map": "/sailing-app/static/js/453.1159af81.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.a32f1579.css",
-    "static/js/main.da654608.js"
+    "static/js/main.1a930f08.js"
   ]
 }
