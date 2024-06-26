@@ -340,6 +340,7 @@ export const loadTurvalaitteet = (map) => {
     },
     minzoom: 10
   });
+
   // add stones (vesikivet)
   map.addSource('vesikivet', {
     type: 'geojson',

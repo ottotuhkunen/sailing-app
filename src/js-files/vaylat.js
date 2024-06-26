@@ -64,6 +64,7 @@ export const loadVaylat = (map) => {
     const popupContent = `
       <h3 class="popupTitle">${getVaylalajiName(properties.vaylalaji)}</h3>
       <p class="popupText">${properties.vay_nimisu}</p>
+      <p class="popupText">${properties.vayla_lk}</p>
       <p class="popupText">Syvyydet: ${properties.syvyydet}</p>
     `;
 
@@ -90,6 +91,6 @@ const getVaylalajiName = (code) => {
     case 2:
       return 'Sisävesiväylä';
     default:
-      return 'Unknown';
+      return 'Väylä';
   }
 };
