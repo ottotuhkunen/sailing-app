@@ -37,19 +37,20 @@ const NavBar = ({ map }) => {
         <img src={`${process.env.PUBLIC_URL}/src/icons/navbar/navIcon3.png`} alt={`nav-icon`} className="nav-icon" />
       </button>
       <button
+        id='toggleValosektorit'
+        className="nav-button"
+        onClick={() => toggleLayer('valosektorit')}
+      >
+        <img src={`${process.env.PUBLIC_URL}/src/icons/sektoriloisto.png`} alt={`nav-icon`} className="nav-icon" />
+      </button>
+      <button
         id='toggleReittiButton'
         className="nav-button"
         onClick={() => toggleLayer('race')}
       >
         <img src={`${process.env.PUBLIC_URL}/src/icons/navbar/navIcon5.png`} alt={`nav-icon`} className="nav-icon" />
       </button>
-      <button
-        id='presetButton'
-        className="nav-button"
-        onClick={() => toggleLayer('preset-layer')}
-      >
-        <img src={`${process.env.PUBLIC_URL}/src/icons/navbar/navIcon6.png`} alt={`nav-icon`} className="nav-icon" />
-      </button>
+  
       <button
         id='toggleLiikenneButton'
         className="nav-button"
@@ -62,3 +63,13 @@ const NavBar = ({ map }) => {
 };
 
 export default NavBar;
+
+/*
+
+Weather button for future:
+
+<button id='presetButton' className="nav-button" onClick={() => toggleLayer('preset-layer')}>
+  <img src={`${process.env.PUBLIC_URL}/src/icons/navbar/navIcon6.png`} alt={`nav-icon`} className="nav-icon" />
+</button>
+
+*/

@@ -1,22 +1,6 @@
 import mapboxgl from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
 
-/*
-const iconFileNames = {
-  0: 'erikois-poiju.png',
-  1: 'vasen-poiju.png',
-  2: 'oikea-poiju.png',
-  3: 'pohjois-poiju.png',
-  4: 'etela-poiju.png',
-  5: 'lansi-poiju.png',
-  6: 'ita-poiju.png',
-  7: 'kari-poiju.png',
-  8: 'turvavesi-poiju.png',
-  9: 'erikois-poiju.png',
-  99: 'erikois-poiju.png'
-};
-*/
-
 const navlTyypNames = {
   0: 'Tuntematon',
   1: 'Vasen',
@@ -45,6 +29,13 @@ const tyJnrNames = {
   10: 'Viitta',
   11: 'Tunnusmajakka',
   13: 'Kummeli'
+};
+
+const colorMap = {
+  'vi': '#00FF00', // green
+  'p': '#FF0000', // red
+  'v': '#FFFFFF', // white
+  'k': '#FFFF00', // yellow
 };
 
 export const loadTurvalaitteet = (map) => {
@@ -127,6 +118,12 @@ export const loadTurvalaitteet = (map) => {
     return 'erikois-poiju.png';
   }
 
+  function lightSetting(valaistu) {
+    // valaistu value = "K" (kyllä) or "E" (ei)
+    if (valaistu === "K") return "💡";
+    else return "";
+  }
+
   function preloadImagesAndAddLayers(map, features) {
     const loadedImages = {};
 
@@ -159,7 +156,11 @@ export const loadTurvalaitteet = (map) => {
         const iconName = `icon-${iconFileName}`;
         const layerId = `turvalaitteet-layer-${navl_tyyp}-${ty_jnr}`;
 
+        const tyJnrCenterAnchor = [2, 4, 5, 11];
+
         if (!map.getLayer(layerId)) {
+          const isCenterAnchor = tyJnrCenterAnchor.includes(ty_jnr);
+          
           map.addLayer({
             id: layerId,
             type: 'symbol',
@@ -169,19 +170,19 @@ export const loadTurvalaitteet = (map) => {
               'icon-image': iconName,
               'icon-size': 0.2,
               'icon-allow-overlap': true,
-              'icon-anchor': 'bottom'
+              'icon-anchor': isCenterAnchor ? 'center' : 'bottom'
             },
             minzoom: 10
           });
-
+          
           // Add click event listener for popups
           map.on('click', layerId, (e) => {
             const feature = e.features[0];
-            const { navl_tyyp, ty_jnr, nimis, sijaintis } = feature.properties;
+            const { navl_tyyp, ty_jnr, nimis, sijaintis, valaistu } = feature.properties;
 
             const popupContent = `
               <h3 class="popupTitle">${nimis}</h3>
-              <p class="popupText">${navlTyypNames[navl_tyyp]} ${tyJnrNames[ty_jnr]}</p>
+              <p class="popupText">${navlTyypNames[navl_tyyp]} ${tyJnrNames[ty_jnr]} ${lightSetting(valaistu)}</p>
               <p class="popupText2">${sijaintis}</p>
             `;
 
@@ -196,4 +197,128 @@ export const loadTurvalaitteet = (map) => {
       console.error('Error preloading images:', error);
     });
   }
+
+  // Load and process valosektorit.geojson data
+  fetch(`${process.env.PUBLIC_URL}/src/valosektorit.geojson`)
+    .then(response => response.json())
+    .then(data => {
+      if (data && data.features) {
+        console.log("valosektorit data loaded", data); // Added logging
+
+        // Add the GeoJSON source for valosektorit
+        map.addSource('valosektorit', {
+          type: 'geojson',
+          data: {
+            type: 'FeatureCollection',
+            features: data.features
+          }
+        });
+
+        const sectorFeatures = [];
+        data.features.forEach((feature) => {
+          const { id, alkukulma, loppukulma, varis } = feature.properties;
+          const coordinates = feature.geometry.coordinates;
+          const color = colorMap[varis] || '#FFFFFF';
+
+          // Skip full-circle sectors
+          if (alkukulma === 0.0 && loppukulma === 360.0) {
+            return;
+          }
+
+          // Create sector arcs and features
+          const sectorGeoJSON = createSectorArcGeoJSON(coordinates, loppukulma, alkukulma, color);
+          sectorFeatures.push(...sectorGeoJSON.features);
+        });
+
+        // Add a single layer for all sector arcs
+        map.addLayer({
+          id: 'valosektorit-layer',
+          type: 'fill',
+          source: {
+            type: 'geojson',
+            data: {
+              type: 'FeatureCollection',
+              features: sectorFeatures
+            }
+          },
+          layout: {},
+          paint: {
+            'fill-color': ['get', 'color'],
+            'fill-opacity': 0.4,
+            'fill-outline-color': 'black',
+          },
+          minzoom: 10
+        });
+
+      } else {
+        console.error('Invalid GeoJSON data:', data);
+      }
+    })
+    .catch(error => {
+      console.error('Error loading valosektorit GeoJSON data:', error);
+    });
+    function createSectorArcGeoJSON(coordinates, startBearing, endBearing, color) {
+      const radius = 0.005; // Adjust radius for better visibility
+      const separationAngle = 0.1; // Slight separation angle in degrees
+    
+      // Normalize start and end bearings to be within [0, 360) degrees
+      let normalizedStartBearing = startBearing % 360;
+      let normalizedEndBearing = endBearing % 360;
+    
+      // Convert negative bearings to positive equivalent
+      if (normalizedStartBearing < 0) {
+        normalizedStartBearing += 360;
+      }
+      if (normalizedEndBearing < 0) {
+        normalizedEndBearing += 360;
+      }
+    
+      // Convert degrees to radians
+      const startRad = (270 - normalizedStartBearing - separationAngle) * (Math.PI / 180);
+      let endRad = (270 - normalizedEndBearing + separationAngle) * (Math.PI / 180);
+    
+      // Adjust endRad if it's less than startRad (indicating a wrap around)
+      if (endRad < startRad) {
+        endRad += 2 * Math.PI;
+      }
+    
+      const arcCoordinates = [];
+    
+      // Starting point of the arc
+      arcCoordinates.push(coordinates);
+    
+      // Number of steps for smooth arc
+      const steps = 30;
+      const step = (endRad - startRad) / steps;
+    
+      // Calculate points along the arc
+      for (let i = 0; i <= steps; i++) {
+        const theta = startRad + i * step;
+        const x = coordinates[0] + radius * Math.cos(theta) / Math.cos(coordinates[1] * Math.PI / 180);
+        const y = coordinates[1] + radius * Math.sin(theta);
+        arcCoordinates.push([x, y]);
+      }
+    
+      // Closing point of the arc
+      arcCoordinates.push(coordinates);
+    
+      return {
+        type: 'FeatureCollection',
+        features: [
+          {
+            type: 'Feature',
+            geometry: {
+              type: 'Polygon',
+              coordinates: [arcCoordinates]
+            },
+            properties: {
+              color
+            }
+          }
+        ]
+      };
+    }
+    
+    
+    
 };
