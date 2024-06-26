@@ -2,14 +2,14 @@ import React, { useEffect, useState, useRef } from 'react';
 import './App.css';
 import mapboxgl from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
-import NavBar from './NavBar';
-import { loadTurvalaitteet } from './turvalaitteet';
-import { loadAlueet } from './alueet';
-import { loadVaylat } from './vaylat';
-import { loadRace } from './reitti';
-import { loadLiikenne } from './liikenne';
-import { loadPlaceNames } from './placeNames';
-import { initializeLine, drawLine, clearLine } from './line';
+import NavBar from './js-files/NavBar';
+import { loadTurvalaitteet } from './js-files/turvalaitteet';
+import { loadAlueet } from './js-files/alueet';
+import { loadVaylat } from './js-files/vaylat';
+import { loadRace } from './js-files/reitti';
+import { loadLiikenne } from './js-files/liikenne';
+import { loadPlaceNames } from './js-files/placeNames';
+import { initializeLine, drawLine, clearLine } from './js-files/line';
 
 mapboxgl.accessToken = 'pk.eyJ1Ijoib3R0b3R1aGt1bmVuIiwiYSI6ImNseG41dW9vaDAwNzQycXNleWI1MmowbHcifQ.1ZMRPeOQ7z9GRzKILnFNAQ';
 
@@ -38,11 +38,11 @@ function App() {
       setMapLoaded(true);
 
       loadTurvalaitteet(mapInstanceRef.current);
-      loadAlueet(mapInstanceRef.current);
       loadVaylat(mapInstanceRef.current);
       loadRace(mapInstanceRef.current);
       loadLiikenne(mapInstanceRef.current);
       loadPlaceNames(mapInstanceRef.current);
+      loadAlueet(mapInstanceRef.current);
 
       // Add zoom and rotation controls to the map.
       mapInstanceRef.current.addControl(new mapboxgl.NavigationControl());

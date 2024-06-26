@@ -1,5 +1,5 @@
 import React from 'react';
-import './App.css';
+import '../App.css';
 
 const NavBar = ({ map }) => {
 
@@ -39,7 +39,7 @@ const NavBar = ({ map }) => {
       <button
         id='toggleValosektorit'
         className="nav-button"
-        onClick={() => toggleLayer('valosektorit')}
+        onClick={() => toggleLayer('valosektorit') + toggleLayer('taululinjat')}
       >
         <img src={`${process.env.PUBLIC_URL}/src/icons/sektoriloisto.png`} alt={`nav-icon`} className="nav-icon" />
       </button>

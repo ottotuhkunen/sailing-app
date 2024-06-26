@@ -21,16 +21,19 @@ The map is only functional in Finnish territorial waters, lakes and rivers.
 - Ferry and cable ferry routes and line names from Maanmittauslaitos
 
 ### Under development
-- Toggle buttons on the bottom menu bar are not functional. Only the recenter-button is currently working.
+- Toggle buttons on the bottom menu bar are working but not changing states visually
 - Current location and direction of travel (under development)
-    - currently the device location is weak and not updating on regular intervals
-- Ability to define a route (red dotted line)
+- Ability to define a route (red dotted line) in the app
     - currently only possible with an imported GeoJSON file
 - Ability to define information boxes on the map (e.g. sailing race notes around the route)
     - currently only possible with an importen GeoJSON file
+- Visual updates and user testing
+- Performance updates
 
 ## Images
 
 <img src="./images/desktop1.png" alt="plot" style="max-width: 100%; height: auto;">
 
-<img src="./images/mobile1.jpeg" alt="plot" style="max-width: 660px; height: auto;">
+<img src="./images/desktop2.jpeg" alt="plot" style="max-width: 660px; height: auto;">
+
+App is made and updated by Otto Tuhkunen.

@@ -1,5 +1,8 @@
 // placeNames.js
 import mapboxgl from 'mapbox-gl';
+import saaretGeoJSON from '../json-files/saariTaiLuoto.geojson';
+import lautatGeoJSON from '../json-files/lauttaJaLossi.geojson';
+import merialueetGeoJSON from '../json-files/merialueet.geojson';
 
 const loadGeoJsonData = (map, url, sourceId, textColor, minZoom) => {
 
@@ -51,27 +54,12 @@ export const loadPlaceNames = (map) => {
     attributionControl.appendChild(customAttribution);
   }
 
-  loadGeoJsonData(
-    map,
-    `${process.env.PUBLIC_URL}/src/placeNames/saariTaiLuoto.json`,
-    'saariTaiLuoto',
-    '#333', // Black
-    10
-  );
+  // Load saaretGeoJSON
+  loadGeoJsonData(map, saaretGeoJSON, 'saariTaiLuoto', '#333', 10); // black text
 
-  loadGeoJsonData(
-    map,
-    `${process.env.PUBLIC_URL}/src/placeNames/lauttaJaLossi.geojson`,
-    'lauttaJaLossi',
-    '#CC5500', // Orange
-    10
-  );
+  // Load lautatGeoJSON
+  loadGeoJsonData(map, lautatGeoJSON, 'lauttaJaLossi', '#CC5500', 10); // orange text
 
-  loadGeoJsonData(
-    map,
-    `${process.env.PUBLIC_URL}/src/placeNames/merialueet.json`,
-    'merialueet',
-    '#0000FF', // Blue
-    10
-  );
+  // Load merialueetGeoJSON
+  loadGeoJsonData(map, merialueetGeoJSON, 'merialueet', '#0000FF', 10); // blue text
 };

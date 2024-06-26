@@ -1,6 +1,6 @@
 import mapboxgl from 'mapbox-gl';
+import vaylatGeoJSON from '../json-files/vaylat.geojson';
 
-const vaylatGeoJSON = `${process.env.PUBLIC_URL}/src/vaylat.geojson`;
 
 export const loadVaylat = (map) => {
   map.addSource('vaylat-source', {
@@ -18,11 +18,11 @@ export const loadVaylat = (map) => {
       'line-cap': 'round'
     },
     paint: {
-      'line-opacity': 0.8,
+      'line-opacity': 1,
       'line-width': [
         'case',
         ['==', ['get', 'valaistus'], 1],  // If valaistus is 1
-        3,                                // Use line width of 5
+        2,                                // Use line width of 2
         1                                 // Otherwise, use line width of 2
       ],
       'line-color': [

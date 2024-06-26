@@ -248,7 +248,7 @@ export const loadLiikenne = async (map) => {
 
     setInterval(() => {
       updateVessels(map);
-    }, 20000);
+    }, 30000);
 
     // Add cluster layer
     if (!map.getLayer('liikenne-clusters')) {

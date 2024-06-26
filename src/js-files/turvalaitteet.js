@@ -1,5 +1,9 @@
 import mapboxgl from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
+import turvalaitteetGeoJSON from '../json-files/turvalaitteet.geojson';
+import valosektoritGeoJSON from '../json-files/valosektorit.geojson';
+import taululinjatGeoJSON from '../json-files/taululinjat.geojson';
+import vesikivetGeoJSON from '../json-files/vesikivet.geojson';
 
 const navlTyypNames = {
   0: 'Tuntematon',
@@ -51,7 +55,7 @@ export const loadTurvalaitteet = (map) => {
   }
 
   // Load GeoJSON data
-  fetch(`${process.env.PUBLIC_URL}/src/turvalaitteet.geojson`)
+  fetch(turvalaitteetGeoJSON)
     .then(response => {
       if (!response.ok) {
         throw new Error('Network response was not ok');
@@ -199,126 +203,162 @@ export const loadTurvalaitteet = (map) => {
   }
 
   // Load and process valosektorit.geojson data
-  fetch(`${process.env.PUBLIC_URL}/src/valosektorit.geojson`)
-    .then(response => response.json())
-    .then(data => {
-      if (data && data.features) {
-        console.log("valosektorit data loaded", data); // Added logging
+  fetch(valosektoritGeoJSON)
+  .then(response => response.json())
+  .then(data => {
+    if (data && data.features) {
 
-        // Add the GeoJSON source for valosektorit
-        map.addSource('valosektorit', {
+      // Add the GeoJSON source for valosektorit
+      map.addSource('valosektorit', {
+        type: 'geojson',
+        data: {
+          type: 'FeatureCollection',
+          features: data.features
+        }
+      });
+
+      const sectorFeatures = [];
+      data.features.forEach((feature) => {
+        const { id, alkukulma, loppukulma, varis } = feature.properties;
+        const coordinates = feature.geometry.coordinates;
+        const color = colorMap[varis] || '#FFFFFF';
+
+        // Skip full-circle sectors
+        if (alkukulma === 0.0 && loppukulma === 360.0) {
+          return;
+        }
+
+        // Create sector arcs and features
+        const sectorGeoJSON = createSectorArcGeoJSON(coordinates, loppukulma, alkukulma, color);
+        sectorFeatures.push(...sectorGeoJSON.features);
+      });
+
+      // Add a single layer for all sector arcs
+      map.addLayer({
+        id: 'valosektorit-layer',
+        type: 'fill',
+        source: {
           type: 'geojson',
           data: {
             type: 'FeatureCollection',
-            features: data.features
+            features: sectorFeatures
           }
-        });
+        },
+        layout: {},
+        paint: {
+          'fill-color': ['get', 'color'],
+          'fill-opacity': 0.4,
+          'fill-outline-color': 'black',
+        },
+        minzoom: 10
+      });
 
-        const sectorFeatures = [];
-        data.features.forEach((feature) => {
-          const { id, alkukulma, loppukulma, varis } = feature.properties;
-          const coordinates = feature.geometry.coordinates;
-          const color = colorMap[varis] || '#FFFFFF';
-
-          // Skip full-circle sectors
-          if (alkukulma === 0.0 && loppukulma === 360.0) {
-            return;
-          }
-
-          // Create sector arcs and features
-          const sectorGeoJSON = createSectorArcGeoJSON(coordinates, loppukulma, alkukulma, color);
-          sectorFeatures.push(...sectorGeoJSON.features);
-        });
-
-        // Add a single layer for all sector arcs
-        map.addLayer({
-          id: 'valosektorit-layer',
-          type: 'fill',
-          source: {
-            type: 'geojson',
-            data: {
-              type: 'FeatureCollection',
-              features: sectorFeatures
-            }
-          },
-          layout: {},
-          paint: {
-            'fill-color': ['get', 'color'],
-            'fill-opacity': 0.4,
-            'fill-outline-color': 'black',
-          },
-          minzoom: 10
-        });
-
-      } else {
-        console.error('Invalid GeoJSON data:', data);
-      }
-    })
-    .catch(error => {
-      console.error('Error loading valosektorit GeoJSON data:', error);
-    });
-    function createSectorArcGeoJSON(coordinates, startBearing, endBearing, color) {
-      const radius = 0.005; // Adjust radius for better visibility
-      const separationAngle = 0.1; // Slight separation angle in degrees
-    
-      // Normalize start and end bearings to be within [0, 360) degrees
-      let normalizedStartBearing = startBearing % 360;
-      let normalizedEndBearing = endBearing % 360;
-    
-      // Convert negative bearings to positive equivalent
-      if (normalizedStartBearing < 0) {
-        normalizedStartBearing += 360;
-      }
-      if (normalizedEndBearing < 0) {
-        normalizedEndBearing += 360;
-      }
-    
-      // Convert degrees to radians
-      const startRad = (270 - normalizedStartBearing - separationAngle) * (Math.PI / 180);
-      let endRad = (270 - normalizedEndBearing + separationAngle) * (Math.PI / 180);
-    
-      // Adjust endRad if it's less than startRad (indicating a wrap around)
-      if (endRad < startRad) {
-        endRad += 2 * Math.PI;
-      }
-    
-      const arcCoordinates = [];
-    
-      // Starting point of the arc
-      arcCoordinates.push(coordinates);
-    
-      // Number of steps for smooth arc
-      const steps = 30;
-      const step = (endRad - startRad) / steps;
-    
-      // Calculate points along the arc
-      for (let i = 0; i <= steps; i++) {
-        const theta = startRad + i * step;
-        const x = coordinates[0] + radius * Math.cos(theta) / Math.cos(coordinates[1] * Math.PI / 180);
-        const y = coordinates[1] + radius * Math.sin(theta);
-        arcCoordinates.push([x, y]);
-      }
-    
-      // Closing point of the arc
-      arcCoordinates.push(coordinates);
-    
-      return {
-        type: 'FeatureCollection',
-        features: [
-          {
-            type: 'Feature',
-            geometry: {
-              type: 'Polygon',
-              coordinates: [arcCoordinates]
-            },
-            properties: {
-              color
-            }
-          }
-        ]
-      };
+    } else {
+      console.error('Invalid GeoJSON data:', data);
     }
-    
-    
-    
+  })
+  .catch(error => {
+    console.error('Error loading valosektorit GeoJSON data:', error);
+  });
+  function createSectorArcGeoJSON(coordinates, startBearing, endBearing, color) {
+    const radius = 0.005; // Adjust radius for better visibility
+    const separationAngle = 0.1; // Slight separation angle in degrees
+  
+    // Normalize start and end bearings to be within [0, 360) degrees
+    let normalizedStartBearing = startBearing % 360;
+    let normalizedEndBearing = endBearing % 360;
+  
+    // Convert negative bearings to positive equivalent
+    if (normalizedStartBearing < 0) {
+      normalizedStartBearing += 360;
+    }
+    if (normalizedEndBearing < 0) {
+      normalizedEndBearing += 360;
+    }
+  
+    // Convert degrees to radians
+    const startRad = (270 - normalizedStartBearing - separationAngle) * (Math.PI / 180);
+    let endRad = (270 - normalizedEndBearing + separationAngle) * (Math.PI / 180);
+  
+    // Adjust endRad if it's less than startRad (indicating a wrap around)
+    if (endRad < startRad) {
+      endRad += 2 * Math.PI;
+    }
+  
+    const arcCoordinates = [];
+  
+    // Starting point of the arc
+    arcCoordinates.push(coordinates);
+  
+    // Number of steps for smooth arc
+    const steps = 30;
+    const step = (endRad - startRad) / steps;
+  
+    // Calculate points along the arc
+    for (let i = 0; i <= steps; i++) {
+      const theta = startRad + i * step;
+      const x = coordinates[0] + radius * Math.cos(theta) / Math.cos(coordinates[1] * Math.PI / 180);
+      const y = coordinates[1] + radius * Math.sin(theta);
+      arcCoordinates.push([x, y]);
+    }
+  
+    // Closing point of the arc
+    arcCoordinates.push(coordinates);
+  
+    return {
+      type: 'FeatureCollection',
+      features: [
+        {
+          type: 'Feature',
+          geometry: {
+            type: 'Polygon',
+            coordinates: [arcCoordinates]
+          },
+          properties: {
+            color
+          }
+        }
+      ]
+    };
+  }
+
+  // Load taululinjat.geojson data
+  map.addSource('taululinjat', {
+    type: 'geojson',
+    data: taululinjatGeoJSON
+  });
+
+  map.addLayer({
+    id: 'taululinjat-layer',
+    type: 'line',
+    source: 'taululinjat',
+    layout: {},
+    paint: {
+      'line-color': 'black',
+      'line-width': 1,
+      'line-dasharray': [2, 4]
+    },
+    minzoom: 10
+  });
+  // add stones (vesikivet)
+  map.addSource('vesikivet', {
+    type: 'geojson',
+    data: vesikivetGeoJSON
+  });
+
+  map.addLayer({
+    id: 'vesikivet-layer',
+    type: 'symbol',
+    source: 'vesikivet',
+    layout: {
+      'text-field': '+', // Display "+" at each stone
+      'text-size': 14,
+      'text-anchor': 'center',
+      'text-allow-overlap': true
+    },
+    paint: {
+      'text-color': '#000000'
+    },
+    minzoom: 12
+  });
 };

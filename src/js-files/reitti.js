@@ -1,7 +1,7 @@
 import mapboxgl from 'mapbox-gl';
 
-const raceGeoJSON = `${process.env.PUBLIC_URL}/src/reitti.geojson`; // route geojson
-const instructionsGeoJSON = `${process.env.PUBLIC_URL}/src/reittiohjeet.geojson`; // instructions geojson
+import raceGeoJSON from '../json-files/reitti.geojson';
+import instructionsGeoJSON from '../json-files/reittiohjeet.geojson';
 
 export const loadRace = (map) => {
   // Fetch and add race route
@@ -24,9 +24,9 @@ export const loadRace = (map) => {
             'line-cap': 'round'
           },
           paint: {
-            'line-color': '#FF0000', // Red
-            'line-width': 2,
-            'line-dasharray': [1, 2]
+            'line-color': 'red', // Red
+            'line-width': 1.5,
+            'line-dasharray': [1, 3, 3, 3]
           }
         });
 
