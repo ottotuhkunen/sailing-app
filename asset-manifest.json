@@ -1,7 +1,7 @@
 {
   "files": {
-    "main.css": "/sailing-app/static/css/main.a32f1579.css",
-    "main.js": "/sailing-app/static/js/main.9f66d9b3.js",
+    "main.css": "/sailing-app/static/css/main.3c78aaab.css",
+    "main.js": "/sailing-app/static/js/main.3f1d36c7.js",
     "static/js/453.1159af81.chunk.js": "/sailing-app/static/js/453.1159af81.chunk.js",
     "static/media/vesikivet.geojson": "/sailing-app/static/media/vesikivet.b4600b6ed2184fdd90e8.geojson",
     "static/media/turvalaitteet.geojson": "/sailing-app/static/media/turvalaitteet.3c0a5e26f4f42547cba1.geojson",
@@ -15,12 +15,12 @@
     "static/media/reittiohjeet.geojson": "/sailing-app/static/media/reittiohjeet.10f14b8ccdf49f0f0ece.geojson",
     "static/media/reitti.geojson": "/sailing-app/static/media/reitti.8d254a24936dbb617ceb.geojson",
     "index.html": "/sailing-app/index.html",
-    "main.a32f1579.css.map": "/sailing-app/static/css/main.a32f1579.css.map",
-    "main.9f66d9b3.js.map": "/sailing-app/static/js/main.9f66d9b3.js.map",
+    "main.3c78aaab.css.map": "/sailing-app/static/css/main.3c78aaab.css.map",
+    "main.3f1d36c7.js.map": "/sailing-app/static/js/main.3f1d36c7.js.map",
     "453.1159af81.chunk.js.map": "/sailing-app/static/js/453.1159af81.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.a32f1579.css",
-    "static/js/main.9f66d9b3.js"
+    "static/css/main.3c78aaab.css",
+    "static/js/main.3f1d36c7.js"
   ]
 }
