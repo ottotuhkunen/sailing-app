@@ -176,7 +176,7 @@ export const loadTurvalaitteet = (map) => {
             },
             minzoom: 10
           });
-
+          
           // Add click event listener for popups
           map.on('click', layerId, (e) => {
             const feature = e.features[0];

@@ -10,6 +10,7 @@ import { loadRace } from './js-files/reitti';
 import { loadLiikenne } from './js-files/liikenne';
 import { loadPlaceNames } from './js-files/placeNames';
 import { initializeLine, drawLine, clearLine } from './js-files/line';
+// import { fetchWeatherData } from './js-files/weather';
 
 mapboxgl.accessToken = 'pk.eyJ1Ijoib3R0b3R1aGt1bmVuIiwiYSI6ImNseG41dW9vaDAwNzQycXNleWI1MmowbHcifQ.1ZMRPeOQ7z9GRzKILnFNAQ';
 
@@ -21,7 +22,7 @@ function App() {
   const [info, setInfo] = useState(null);
   const [isRulerMode, setIsRulerMode] = useState(false);
   const [mapLoaded, setMapLoaded] = useState(false);
-
+  // const [weatherData, setWeatherData] = useState(null);
 
   // Function to initialize the map
   const initializeMap = () => {
@@ -30,9 +31,31 @@ function App() {
       style: 'mapbox://styles/ottotuhkunen/clxn5yadi002m01r0896chtyt',
       center: [22.2240, 60.1789],
       zoom: 9,
-      pitchWithRotate: false,
+      pitchWithRotate: true,
       pitch: 0
     });
+
+    /*
+    mapInstanceRef.current.on('load', async () => {
+      const data = await fetchWeatherData();
+      setWeatherData(data);
+
+      // Display weather markers on the map
+      if (data) {
+        data.forEach((observation) => {
+          const { lon, lat, windDirection } = observation;
+
+          const markerEl = document.createElement('div');
+          markerEl.className = 'weather-marker';
+          markerEl.style.transform = `rotate(${windDirection}deg)`;
+
+          new mapboxgl.Marker(markerEl)
+            .setLngLat([lon, lat])
+            .addTo(mapInstanceRef.current);
+        });
+      }
+    });
+    */
 
     mapInstanceRef.current.on('load', () => {
       setMapLoaded(true);

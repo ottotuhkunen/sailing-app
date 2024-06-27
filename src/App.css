@@ -1,5 +1,6 @@
 .App {
   text-align: center;
+  overflow: hidden;
 }
 
 .map-container {
@@ -44,14 +45,6 @@
   color: white;
 }
 
-.nav-button {
-  background: none;
-  border: none;
-  padding: 10px;
-  cursor: pointer;
-  color: white;
-}
-
 .nav-icon {
   width: 34px;
   height: 34px;
@@ -73,24 +66,13 @@
   top: 0px;
 }
 
-.weather-selector {
-  position: absolute;
-  top: 10px;
-  left: 10px;
-  z-index: 1;
-  background: white;
-  padding: 10px;
-  border-radius: 5px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-}
-
-.weather-selector label {
-  margin-right: 10px;
-}
-
-.weather-label {
-  position: absolute;
-  z-index: 1000;
+.weather-marker {
+  width: 20px; /* Adjust size as needed */
+  height: 20px; /* Adjust size as needed */
+  background-image: url('../public/src/icons/windCalm.png'); /* Path to your weather icon image */
+  background-size: contain;
+  background-repeat: no-repeat;
+  transform-origin: center center;
 }
 
 .place-name-marker {
@@ -204,3 +186,17 @@
 .ruler-button:hover {
   background-color: #ececec;
 }
+
+.nav-button {
+  background: linear-gradient(to right, transparent, rgba(0, 204, 255, 0.4), transparent);
+  border: none;
+  padding: 10px;
+  cursor: pointer;
+  color: white;
+  width: 100%;
+}
+
+.inactiveButton {
+  background: none !important;
+}
+
