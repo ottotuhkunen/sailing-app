@@ -57,7 +57,7 @@ const NavBar = ({ map }) => {
       <button
         id='toggleReittiButton'
         className={`nav-button ${buttonStates.toggleReittiButton ? '' : 'inactiveButton'}`}
-        onClick={() => toggleLayer('race', 'toggleReittiButton')}
+        onClick={() => toggleLayer('race', '', 'toggleReittiButton')}
       >
         <img src={`${process.env.PUBLIC_URL}/src/icons/navbar/navIcon5.png`} alt={`Reitti`} className="nav-icon" />
       </button>

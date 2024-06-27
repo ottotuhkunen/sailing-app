@@ -1,4 +1,7 @@
+import mapboxgl from 'mapbox-gl';
 import geojsonData from '../json-files/alueet.geojson';
+import matalikotData from '../json-files/matalikot.geojson';
+import ankkuripaikatData from '../json-files/ankkuripaikat.geojson';
 
 export const loadAlueet = (map) => {
     // Function to load and render GeoJSON data for 'alueet'
@@ -58,9 +61,9 @@ export const loadAlueet = (map) => {
             minzoom: 10
         });
 
-        // Add layer for depth labels
+        // Add layer for depth labels (syvyydet)
         map.addLayer({
-            id: 'alueet-labels',
+            id: 'vayla-alueet-depth',
             type: 'symbol',
             source: 'alueet',
             layout: {
@@ -79,6 +82,90 @@ export const loadAlueet = (map) => {
         moveLayerBehind('vayla-alueet-layer', ['race-route', 'vaylat-layer']);
     };
 
+    const loadMatalikotData = (data) => {
+        // Add 'matalikot' GeoJSON source
+        map.addSource('matalikot', {
+            type: 'geojson',
+            data: {
+                type: 'FeatureCollection',
+                features: data.features
+            }
+        });
+
+        // Add layer for rendering 'matalikot-layer'
+        map.addLayer({
+            id: 'matalikot-layer',
+            type: 'fill',
+            source: 'matalikot',
+            paint: {
+                'fill-color': '#22A4D4',
+                'fill-outline-color': 'blue',
+                'fill-opacity': 0.5
+            },
+            minzoom: 12
+        });
+
+        moveLayerBehind('matalikot-layer', ['race-route', 'vaylat-layer', 'vayla-alueet-layer']);
+    };
+
+    const loadAnkkuripaikatData = (data) => {
+        // Add 'ankkuripaikat' GeoJSON source
+        map.addSource('ankkuripaikat', {
+            type: 'geojson',
+            data: {
+                type: 'FeatureCollection',
+                features: data.features
+            }
+        });
+
+        // Add an image for use in the symbol layer
+        map.loadImage(`${process.env.PUBLIC_URL}/src/icons/anchor.png`, (error, image) => {
+            if (error) throw error;
+            map.addImage('anchor-icon', image);
+
+            // Add layer for rendering 'ankkuripaikat-layer'
+            map.addLayer({
+                id: 'ankkuripaikat-layer',
+                type: 'symbol',
+                source: 'ankkuripaikat',
+                layout: {
+                    'icon-image': 'anchor-icon',
+                    'icon-size': 0.3
+                },
+                minzoom: 11
+            });
+
+            moveLayerBehind('ankkuripaikat-layer', ['race-route', 'vaylat-layer', 'vayla-alueet-layer', 'matalikot-layer']);
+        });
+
+        // Add click event listener for popups
+        map.on('click', 'ankkuripaikat-layer', (e) => {
+            const coordinates = e.features[0].geometry.coordinates.slice();
+            const description = 'Ankkuripaikka';
+
+            // Ensure that if the map is zoomed out such that multiple copies of the feature are visible, the popup appears over the copy being clicked on
+            while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
+                coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
+            }
+
+            new mapboxgl.Popup()
+                .setLngLat(coordinates)
+                .setHTML(description)
+                .addTo(map);
+        });
+
+        // Change the cursor to a pointer when the mouse is over the ankkuripaikat-layer
+        map.on('mouseenter', 'ankkuripaikat-layer', () => {
+            map.getCanvas().style.cursor = 'pointer';
+        });
+
+        // Change it back to a pointer when it leaves
+        map.on('mouseleave', 'ankkuripaikat-layer', () => {
+            map.getCanvas().style.cursor = '';
+        });
+
+    };
+
     const moveLayerBehind = (layerId, targetLayerIds) => {
         targetLayerIds.forEach(targetLayerId => {
             if (map.getLayer(targetLayerId)) {
@@ -95,5 +182,25 @@ export const loadAlueet = (map) => {
     })
     .catch(error => {
         console.error('Error loading GeoJSON data for alueet:', error);
+    });
+
+    // Fetch 'matalikot.geojson' data and load layers
+    fetch(matalikotData)
+    .then(response => response.json())
+    .then(data => {
+        loadMatalikotData(data);
+    })
+    .catch(error => {
+        console.error('Error loading GeoJSON data for matalikot:', error);
+    });
+
+    // Fetch 'ankkuripaikat.geojson' data and load layers
+    fetch(ankkuripaikatData)
+    .then(response => response.json())
+    .then(data => {
+        loadAnkkuripaikatData(data);
+    })
+    .catch(error => {
+        console.error('Error loading GeoJSON data for ankkuripaikat:', error);
     });
 };

@@ -1,5 +1,4 @@
 import mapboxgl from 'mapbox-gl';
-
 import raceGeoJSON from '../json-files/reitti.geojson';
 import instructionsGeoJSON from '../json-files/reittiohjeet.geojson';
 
@@ -42,26 +41,53 @@ export const loadRace = (map) => {
     fetch(instructionsGeoJSON)
       .then(response => response.json())
       .then(data => {
-        data.features.forEach(feature => {
-          // Extract coordinates and instruction
-          const coordinates = feature.geometry.coordinates;
-          const instruction = feature.properties.ohje;
+        // Add instructions to the map
+        map.addSource('race-instructions', {
+          type: 'geojson',
+          data: data
+        });
 
-          // Create a marker element
-          const markerEl = document.createElement('div');
-          markerEl.className = 'custom-marker';
-          markerEl.style.backgroundImage = `url(${process.env.PUBLIC_URL}/src/icons/info-16.png)`;
-          markerEl.style.width = '16px';
-          markerEl.style.height = '16px';
+        map.loadImage(`${process.env.PUBLIC_URL}/src/icons/info-16.png`, (error, image) => {
+          if (error) throw error;
+          map.addImage('info-icon', image);
 
-          // Popup with the instruction
-          const popup = new mapboxgl.Popup({ offset: 25 }).setHTML(`<p>${instruction}</p>`);
+          map.addLayer({
+            id: 'race-information',
+            type: 'symbol',
+            source: 'race-instructions',
+            layout: {
+              'icon-image': 'info-icon',
+              'icon-size': 0.8,
+              'icon-allow-overlap': true,
+              'text-allow-overlap': true
+            }
+          });
 
-          // Create a marker
-          new mapboxgl.Marker(markerEl)
-            .setLngLat(coordinates)
-            .setPopup(popup)
-            .addTo(map);
+          // Add click event listener for popups
+          map.on('click', 'race-information', (e) => {
+            const coordinates = e.features[0].geometry.coordinates.slice();
+            const description = e.features[0].properties.ohje;
+
+            // Ensure that if the map is zoomed out such that multiple copies of the feature are visible, the popup appears over the copy being clicked on
+            while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
+              coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
+            }
+
+            new mapboxgl.Popup()
+              .setLngLat(coordinates)
+              .setHTML(`<p>${description}</p>`)
+              .addTo(map);
+          });
+
+          // Change the cursor to a pointer when the mouse is over the race-information layer
+          map.on('mouseenter', 'race-information', () => {
+            map.getCanvas().style.cursor = 'pointer';
+          });
+
+          // Change it back to a pointer when it leaves
+          map.on('mouseleave', 'race-information', () => {
+            map.getCanvas().style.cursor = '';
+          });
         });
       })
       .catch(error => {

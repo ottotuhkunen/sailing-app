@@ -174,9 +174,9 @@ export const loadTurvalaitteet = (map) => {
               'icon-allow-overlap': true,
               'icon-anchor': isCenterAnchor ? 'center' : 'bottom'
             },
-            minzoom: 10
+            minzoom: 11
           });
-          
+
           // Add click event listener for popups
           map.on('click', layerId, (e) => {
             const feature = e.features[0];
@@ -248,7 +248,7 @@ export const loadTurvalaitteet = (map) => {
             'fill-opacity': 0.4,
             'fill-outline-color': 'black',
           },
-          minzoom: 10
+          minzoom: 11
         });
 
       } else {
@@ -337,7 +337,7 @@ export const loadTurvalaitteet = (map) => {
       'line-width': 1,
       'line-dasharray': [2, 4]
     },
-    minzoom: 10
+    minzoom: 11
   });
 
   // Load vesikivet.geojson data
