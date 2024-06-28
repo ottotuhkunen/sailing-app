@@ -17,19 +17,19 @@ export const loadAlueet = (map) => {
 
         // Function to determine fill color based on 'vayalue_ty'
         const getFillColor = ['case',
-            ['==', ['get', 'vayalue_ty'], 1], '#236ce2',
-            ['==', ['get', 'vayalue_ty'], 3], '#236ce2',
-            ['==', ['get', 'vayalue_ty'], 6], '#236ce2',
-            ['==', ['get', 'vayalue_ty'], 7], '#236ce2',
-            ['==', ['get', 'vayalue_ty'], 8], '#236ce2',
-            ['==', ['get', 'vayalue_ty'], 11], '#236ce2',
+            ['==', ['get', 'vayalue_ty'], 1], 'white',
+            ['==', ['get', 'vayalue_ty'], 3], 'white',
+            ['==', ['get', 'vayalue_ty'], 6], 'white',
+            ['==', ['get', 'vayalue_ty'], 7], 'white',
+            ['==', ['get', 'vayalue_ty'], 8], 'white',
+            ['==', ['get', 'vayalue_ty'], 11], 'white',
             ['==', ['get', 'vayalue_ty'], 2], 'green',
             ['==', ['get', 'vayalue_ty'], 4], 'green',
             ['==', ['get', 'vayalue_ty'], 5], 'green',
             ['==', ['get', 'vayalue_ty'], 12], 'green',
             ['==', ['get', 'vayalue_ty'], 13], 'green',
-            ['==', ['get', 'vayalue_ty'], 9], 'orange',
-            ['==', ['get', 'vayalue_ty'], 10], 'orange',
+            ['==', ['get', 'vayalue_ty'], 9], 'darkorange',
+            ['==', ['get', 'vayalue_ty'], 10], 'darkorange',
             '#236ce2' // default color
 
             /*
@@ -56,7 +56,7 @@ export const loadAlueet = (map) => {
             source: 'alueet',
             paint: {
                 'fill-color': getFillColor,
-                'fill-opacity': 0.2
+                'fill-opacity': 0.3
             },
             minzoom: 10
         });

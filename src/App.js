@@ -22,6 +22,7 @@ function App() {
   const [info, setInfo] = useState(null);
   const [isRulerMode, setIsRulerMode] = useState(false);
   const [mapLoaded, setMapLoaded] = useState(false);
+  const [iconPath, setIconPath] = useState(`${process.env.PUBLIC_URL}/src/icons/merkit`);
   // const [weatherData, setWeatherData] = useState(null);
 
   // Function to initialize the map
@@ -59,8 +60,7 @@ function App() {
 
     mapInstanceRef.current.on('load', () => {
       setMapLoaded(true);
-
-      loadTurvalaitteet(mapInstanceRef.current);
+      // loadTurvalaitteet(mapInstanceRef.current, iconPath);
       loadVaylat(mapInstanceRef.current);
       loadRace(mapInstanceRef.current);
       loadLiikenne(mapInstanceRef.current);
@@ -104,6 +104,49 @@ function App() {
       mapInstance.remove();
     };
   }, []);
+
+
+  useEffect(() => {
+    const mapInstance = mapInstanceRef.current;
+  
+    if (mapLoaded) {
+      // Get all layers in the map style
+      const mapStyle = mapInstance.getStyle();
+      const layersToRemove = [];
+  
+      // Collect layers to remove that are related to 'turvalaitteet'
+      mapStyle.layers.forEach(layer => {
+        if (layer.id.startsWith('turvalaitteet')) {
+          layersToRemove.push(layer.id);
+        }
+      });
+  
+      // Define a function to remove layers and sources
+      const removeLayersAndSources = () => {
+        const removePromises = layersToRemove.map(layerId => {
+          return new Promise((resolve) => {
+            if (mapInstance.getLayer(layerId)) {
+              mapInstance.removeLayer(layerId);
+            }
+            if (mapInstance.getSource(layerId)) {
+              mapInstance.removeSource(layerId);
+            }
+            resolve();
+          });
+        });
+        return Promise.all(removePromises);
+      };
+  
+      // Remove all layers and sources, then load 'turvalaitteet'
+      removeLayersAndSources().then(() => {
+        loadTurvalaitteet(mapInstance, iconPath);
+      });
+    }
+  }, [iconPath, mapLoaded]);
+  
+  
+  
+  
 
   useEffect(() => {
     const mapInstance = mapInstanceRef.current;
@@ -174,12 +217,23 @@ function App() {
     }
   };
 
+  const toggleIconPath = () => {
+    setIconPath(prevPath => 
+      prevPath === `${process.env.PUBLIC_URL}/src/icons/paivamerkit` 
+        ? `${process.env.PUBLIC_URL}/src/icons/merkit` 
+        : `${process.env.PUBLIC_URL}/src/icons/paivamerkit`
+    );
+  };
+
   return (
     <div className="App">
       <div id="map" className="map-container" ref={mapContainerRef} />
       {mapLoaded && <NavBar map={mapInstanceRef.current} />}
       <button className={`ruler-button ${isRulerMode ? 'active' : ''}`} onClick={toggleRulerMode}>
         <img src={`${process.env.PUBLIC_URL}/src/icons/ruler.png`} alt="Ruler" />
+      </button>
+      <button className="toggle-markers-button">
+        <img src={`${process.env.PUBLIC_URL}/src/icons/symbolTypeSelector.png`} alt="Ruler" />
       </button>
       {info && (
         <div className="info-box">
@@ -192,3 +246,5 @@ function App() {
 }
 
 export default App;
+
+// onClick={toggleIconPath} (toggle-markers-button)

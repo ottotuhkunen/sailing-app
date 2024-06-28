@@ -42,7 +42,7 @@ const colorMap = {
   'k': '#FFFF00', // yellow
 };
 
-export const loadTurvalaitteet = (map) => {
+export const loadTurvalaitteet = (map, iconPath) => {
 
   // Attribution
   const attributionControl = document.querySelector('.mapboxgl-ctrl-attrib-inner');
@@ -63,8 +63,12 @@ export const loadTurvalaitteet = (map) => {
       return response.json();
     })
     .then(data => {
+      if (map.getSource('turvalaitteet')) {
+        console.warn('Source "turvalaitteet" already exists.');
+        return;
+      }
       if (data && data.features) {
-        // Add the GeoJSON source
+
         map.addSource('turvalaitteet', {
           type: 'geojson',
           data: {
@@ -74,7 +78,7 @@ export const loadTurvalaitteet = (map) => {
         });
 
         // Preload images and add layers
-        preloadImagesAndAddLayers(map, data.features);
+        preloadImagesAndAddLayers(map, data.features, iconPath);
       } else {
         console.error('Invalid GeoJSON data:', data);
       }
@@ -127,7 +131,7 @@ export const loadTurvalaitteet = (map) => {
     return valaistu === "K" ? "💡" : "";
   }
 
-  function preloadImagesAndAddLayers(map, features) {
+  function preloadImagesAndAddLayers(map, features, iconPath) {
     const loadedImages = {};
 
     features.forEach((feature) => {
@@ -136,7 +140,7 @@ export const loadTurvalaitteet = (map) => {
 
       if (!loadedImages[iconFileName]) {
         loadedImages[iconFileName] = new Promise((resolve, reject) => {
-          map.loadImage(`${process.env.PUBLIC_URL}/src/icons/${iconFileName}`, (error, image) => {
+          map.loadImage(`${iconPath}/${iconFileName}`, (error, image) => {
             if (error) {
               console.error(`Error loading image: ${iconFileName}`, error);
               reject(error);
@@ -170,7 +174,7 @@ export const loadTurvalaitteet = (map) => {
             filter: ['all', ['==', 'navl_tyyp', navl_tyyp], ['==', 'ty_jnr', ty_jnr]],
             layout: {
               'icon-image': iconName,
-              'icon-size': 0.2,
+              'icon-size': 0.25,
               'icon-allow-overlap': true,
               'icon-anchor': isCenterAnchor ? 'center' : 'bottom'
             },
@@ -204,6 +208,10 @@ export const loadTurvalaitteet = (map) => {
   fetch(valosektoritGeoJSON)
     .then(response => response.json())
     .then(data => {
+      if (map.getSource('valosektorit')) {
+        console.warn('Source "valosektorit" already exists.');
+        return;
+      }
       if (data && data.features) {
 
         // Add the GeoJSON source for valosektorit
@@ -319,6 +327,11 @@ export const loadTurvalaitteet = (map) => {
         }
       ]
     };
+  }
+
+  if (map.getSource('taululinjat')) {
+    console.warn('Source "taululinjat" already exists.');
+    return;
   }
 
   // Load taululinjat.geojson data

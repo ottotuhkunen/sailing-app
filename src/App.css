@@ -187,8 +187,27 @@
   background-color: #ececec;
 }
 
+.toggle-markers-button {
+  position: absolute;
+  top: 218.7px;
+  right: 10px;
+  padding: 0;
+  background-color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  width: 29px;
+  height: 29px;
+  box-shadow: 0 0 0 2px rgba(0,0,0,.1);
+}
+
+.toggle-markers-button img {
+  width: 24px;
+  height: 24px;
+}
+
 .nav-button {
-  background: linear-gradient(to right, transparent, rgba(0, 204, 255, 0.4), transparent);
+  background: linear-gradient(to right, transparent, rgba(0, 34, 255, 0.4), transparent);
   border: none;
   padding: 10px;
   cursor: pointer;

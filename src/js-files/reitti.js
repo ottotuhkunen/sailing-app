@@ -68,7 +68,6 @@ export const loadRace = (map) => {
             const coordinates = e.features[0].geometry.coordinates.slice();
             const description = e.features[0].properties.ohje;
 
-            // Ensure that if the map is zoomed out such that multiple copies of the feature are visible, the popup appears over the copy being clicked on
             while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
               coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
             }
@@ -79,12 +78,10 @@ export const loadRace = (map) => {
               .addTo(map);
           });
 
-          // Change the cursor to a pointer when the mouse is over the race-information layer
           map.on('mouseenter', 'race-information', () => {
             map.getCanvas().style.cursor = 'pointer';
           });
-
-          // Change it back to a pointer when it leaves
+          
           map.on('mouseleave', 'race-information', () => {
             map.getCanvas().style.cursor = '';
           });
