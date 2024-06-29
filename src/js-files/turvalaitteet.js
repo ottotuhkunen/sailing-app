@@ -19,6 +19,20 @@ const navlTyypNames = {
   99: ''
 };
 
+const navlTyypNamesText = {
+  0: 'Tuntematon',
+  1: 'Vasen',
+  2: 'Oikea',
+  3: 'Pohjois',
+  4: 'Etelä',
+  5: 'Länsi',
+  6: 'Itä',
+  7: 'Karimerkki',
+  8: 'Turvavesimerkki',
+  9: 'Erikoismerkki',
+  99: ''
+};
+
 const tyJnrNames = {
   0: 'Tuntematon',
   1: 'Merimajakka',
@@ -172,7 +186,7 @@ export const loadTurvalaitteet = (map, iconPath) => {
 
             const popupContent = `
               <h3 class="popupTitle">${nimis}</h3>
-              <p class="popupText">${navlTyypNames[navl_tyyp]} ${tyJnrNames[ty_jnr]} ${lightSetting(valaistu)}</p>
+              <p class="popupText">${navlTyypNamesText[navl_tyyp]} ${tyJnrNames[ty_jnr]} ${lightSetting(valaistu)}</p>
               <p class="popupText2">${sijaintis}</p>
             `;
 
