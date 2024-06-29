@@ -1,14 +1,27 @@
 import mapboxgl from 'mapbox-gl';
 import vaylatGeoJSON from '../json-files/vaylat.geojson';
 
-
 export const loadVaylat = (map) => {
   map.addSource('vaylat-source', {
     type: 'geojson',
     data: vaylatGeoJSON
   });
 
-  // Add a layer to render väylät
+  // VL4: Veneilyn runkoväylä (green background)
+  map.addLayer({
+    id: 'vaylat-background-stroke',
+    type: 'line',
+    source: 'vaylat-source',
+    filter: ['==', ['get', 'vayla_lk'], 'VL4: Veneilyn runkoväylä'],
+    paint: {
+      'line-opacity': 0.8,
+      'line-width': 6,
+      'line-color': 'green' 
+    },
+    'below': 'vaylat-layer'
+  });
+
+  // Add a layer for normal sea routes
   map.addLayer({
     id: 'vaylat-layer',
     type: 'line',
@@ -22,20 +35,20 @@ export const loadVaylat = (map) => {
       'line-width': [
         'case',
         ['==', ['get', 'valaistus'], 1],  // If valaistus is 1
-        2,                                // Use line width of 2
-        1                                 // Otherwise, use line width of 2
+        2,                                // Use line width of 2 for normal stroke
+        1                                 // Otherwise, use line width of 1
       ],
       'line-color': [
         'case',
         ['==', ['get', 'valaistus'], 1], 
-        'black',                            // Use black color
-        'white'                             // Otherwise, use white color
+        'black',                           // Use black color for normal stroke
+        'white'                            // Otherwise, use white color
       ]
     },
     'below': 'labels'
   });
 
-  // Add click event listener for popups
+  // Add click event listener for popups on väylät layer
   map.on('click', 'vaylat-layer', (e) => {
     const { properties } = e.features[0];
     const popupContent = `
@@ -65,7 +78,7 @@ export const loadVaylat = (map) => {
       <h3 class="popupTitle">${getVaylalajiName(properties.vaylalaji)}</h3>
       <p class="popupText">${properties.vay_nimisu}</p>
       <p class="popupText">${properties.vayla_lk}</p>
-      <p class="popupText">Syvyydet: ${properties.syvyydet}</p>
+      <p class="popupText">Syvyydet: ${properties.syvyydet || 'N/A'}</p>
     `;
 
     new mapboxgl.Popup({ closeOnClick: true })

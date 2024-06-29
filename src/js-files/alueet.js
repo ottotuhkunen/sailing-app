@@ -68,13 +68,13 @@ export const loadAlueet = (map) => {
             source: 'alueet',
             layout: {
                 'text-field': ['get', 'vayalue_sy'],
-                'text-font': ['Open Sans Regular'],
+                'text-font': ['DIN Offc Pro Bold', 'Arial Unicode MS Bold'],
                 'text-size': 12,
                 'text-offset': [0, 0.5],
                 'text-allow-overlap': true
             },
             paint: {
-                'text-color': 'blue'
+                'text-color': 'black'
             },
             minzoom: 10
         });

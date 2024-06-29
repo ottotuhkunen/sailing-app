@@ -3,14 +3,14 @@ import './App.css';
 import mapboxgl from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import NavBar from './js-files/NavBar';
-import { loadTurvalaitteet } from './js-files/turvalaitteet';
+import { loadTurvalaitteet, removeTurvalaitteet } from './js-files/turvalaitteet';
+import { loadSektoritJaLinjat } from './js-files/sektoritJaLinjat'; 
 import { loadAlueet } from './js-files/alueet';
 import { loadVaylat } from './js-files/vaylat';
 import { loadRace } from './js-files/reitti';
 import { loadLiikenne } from './js-files/liikenne';
 import { loadPlaceNames } from './js-files/placeNames';
 import { initializeLine, drawLine, clearLine } from './js-files/line';
-// import { fetchWeatherData } from './js-files/weather';
 
 mapboxgl.accessToken = 'pk.eyJ1Ijoib3R0b3R1aGt1bmVuIiwiYSI6ImNseG41dW9vaDAwNzQycXNleWI1MmowbHcifQ.1ZMRPeOQ7z9GRzKILnFNAQ';
 
@@ -23,9 +23,7 @@ function App() {
   const [isRulerMode, setIsRulerMode] = useState(false);
   const [mapLoaded, setMapLoaded] = useState(false);
   const [iconPath, setIconPath] = useState(`${process.env.PUBLIC_URL}/src/icons/merkit`);
-  // const [weatherData, setWeatherData] = useState(null);
 
-  // Function to initialize the map
   const initializeMap = () => {
     mapInstanceRef.current = new mapboxgl.Map({
       container: mapContainerRef.current,
@@ -36,41 +34,17 @@ function App() {
       pitch: 0
     });
 
-    /*
-    mapInstanceRef.current.on('load', async () => {
-      const data = await fetchWeatherData();
-      setWeatherData(data);
-
-      // Display weather markers on the map
-      if (data) {
-        data.forEach((observation) => {
-          const { lon, lat, windDirection } = observation;
-
-          const markerEl = document.createElement('div');
-          markerEl.className = 'weather-marker';
-          markerEl.style.transform = `rotate(${windDirection}deg)`;
-
-          new mapboxgl.Marker(markerEl)
-            .setLngLat([lon, lat])
-            .addTo(mapInstanceRef.current);
-        });
-      }
-    });
-    */
-
     mapInstanceRef.current.on('load', () => {
       setMapLoaded(true);
-      // loadTurvalaitteet(mapInstanceRef.current, iconPath);
       loadVaylat(mapInstanceRef.current);
       loadRace(mapInstanceRef.current);
       loadLiikenne(mapInstanceRef.current);
       loadPlaceNames(mapInstanceRef.current);
       loadAlueet(mapInstanceRef.current);
+      loadSektoritJaLinjat(mapInstanceRef.current);
 
-      // Add zoom and rotation controls to the map.
       mapInstanceRef.current.addControl(new mapboxgl.NavigationControl());
 
-      // Add geolocate control to the map.
       geolocateControlRef.current = new mapboxgl.GeolocateControl({
         positionOptions: {
           enableHighAccuracy: true
@@ -85,13 +59,11 @@ function App() {
 
       mapInstanceRef.current.addControl(geolocateControlRef.current);
 
-      // Event listener for geolocate control
       geolocateControlRef.current.on('geolocate', (e) => {
         const userPosition = [e.coords.longitude, e.coords.latitude];
         setUserLocation(userPosition);
       });
 
-      // Initialize line functions with map instance
       initializeLine(mapInstanceRef.current);
     });
 
@@ -105,48 +77,14 @@ function App() {
     };
   }, []);
 
-
   useEffect(() => {
     const mapInstance = mapInstanceRef.current;
   
     if (mapLoaded) {
-      // Get all layers in the map style
-      const mapStyle = mapInstance.getStyle();
-      const layersToRemove = [];
-  
-      // Collect layers to remove that are related to 'turvalaitteet'
-      mapStyle.layers.forEach(layer => {
-        if (layer.id.startsWith('turvalaitteet')) {
-          layersToRemove.push(layer.id);
-        }
-      });
-  
-      // Define a function to remove layers and sources
-      const removeLayersAndSources = () => {
-        const removePromises = layersToRemove.map(layerId => {
-          return new Promise((resolve) => {
-            if (mapInstance.getLayer(layerId)) {
-              mapInstance.removeLayer(layerId);
-            }
-            if (mapInstance.getSource(layerId)) {
-              mapInstance.removeSource(layerId);
-            }
-            resolve();
-          });
-        });
-        return Promise.all(removePromises);
-      };
-  
-      // Remove all layers and sources, then load 'turvalaitteet'
-      removeLayersAndSources().then(() => {
-        loadTurvalaitteet(mapInstance, iconPath);
-      });
+      removeTurvalaitteet(mapInstance); // Remove existing layers and sources
+      loadTurvalaitteet(mapInstance, iconPath); // Load new layers and sources with the updated iconPath
     }
   }, [iconPath, mapLoaded]);
-  
-  
-  
-  
 
   useEffect(() => {
     const mapInstance = mapInstanceRef.current;
@@ -211,7 +149,7 @@ function App() {
   };
 
   const toggleRulerMode = () => {
-    setIsRulerMode(!isRulerMode); // set to opposite
+    setIsRulerMode(!isRulerMode);
     if (isRulerMode) {
       clearLineAndInfo();
     }
@@ -219,9 +157,9 @@ function App() {
 
   const toggleIconPath = () => {
     setIconPath(prevPath => 
-      prevPath === `${process.env.PUBLIC_URL}/src/icons/paivamerkit` 
-        ? `${process.env.PUBLIC_URL}/src/icons/merkit` 
-        : `${process.env.PUBLIC_URL}/src/icons/paivamerkit`
+      prevPath === `${process.env.PUBLIC_URL}/src/icons/merkit` 
+        ? `${process.env.PUBLIC_URL}/src/icons/paivamerkit` 
+        : `${process.env.PUBLIC_URL}/src/icons/merkit`
     );
   };
 
@@ -232,8 +170,8 @@ function App() {
       <button className={`ruler-button ${isRulerMode ? 'active' : ''}`} onClick={toggleRulerMode}>
         <img src={`${process.env.PUBLIC_URL}/src/icons/ruler.png`} alt="Ruler" />
       </button>
-      <button className="toggle-markers-button">
-        <img src={`${process.env.PUBLIC_URL}/src/icons/symbolTypeSelector.png`} alt="Ruler" />
+      <button className="toggle-markers-button" onClick={toggleIconPath}>
+        <img src={`${process.env.PUBLIC_URL}/src/icons/symbolTypeSelector.png`} alt="Toggle Markers" />
       </button>
       {info && (
         <div className="info-box">
@@ -246,5 +184,3 @@ function App() {
 }
 
 export default App;
-
-// onClick={toggleIconPath} (toggle-markers-button)
