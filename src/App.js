@@ -193,6 +193,9 @@ function App() {
           <button onClick={clearLineAndInfo}>Poista mitta</button>
         </div>
       )}
+      <div class="logo-container">
+        <img src={`${process.env.PUBLIC_URL}/src/icons/logo.png`} alt='logo'></img>
+      </div>
     </div>
   );
 }
