@@ -132,7 +132,7 @@
 
 .info-box {
   position: absolute;
-  top: 30px;
+  top: 56px;
   left: 50%;
   transform: translateX(-50%);
   background-color: rgba(12, 2, 67, 0.9);
@@ -149,7 +149,7 @@
 .info-box button {
   margin-top: 10px;
   padding: 5px 10px;
-  background-color: #007bff;
+  background-color: #ba2305;
   color: white;
   border: none;
   border-radius: 3px;
@@ -312,7 +312,6 @@
   background-color: #f2f2f2;
 }
 
-
 .logo-container {
   position: fixed;
   top: 0px;
@@ -327,7 +326,7 @@
 
 /* Additional styles for image */
 .logo-container img {
-  width: 140px;
+  width: 130px;
   vertical-align: middle;
 }
 

@@ -193,8 +193,8 @@ function App() {
           <button onClick={clearLineAndInfo}>Poista mitta</button>
         </div>
       )}
-      <div class="logo-container">
-        <img src={`${process.env.PUBLIC_URL}/src/MeriNavi.svg`} alt='logo' />
+      <div className="logo-container">
+        <img src={`${process.env.PUBLIC_URL}/src/MeriNavi-logo.svg`} alt='logo' />
       </div>
     </div>
   );
