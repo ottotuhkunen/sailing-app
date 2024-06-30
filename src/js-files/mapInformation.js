@@ -11,7 +11,7 @@ const MapInformation = ({ onClose }) => {
           <p style={{textAlign : 'center'}}>Kartan on suunnitellut ja toteuttanut Otto Tuhkunen</p>
           <p style={{color : 'darkred', textAlign: 'center', fontWeight: 'bold'}}>Kartta ei ole navigointikäyttöön, eikä se täytä asianmukaisen merikartan vaatimuksia.</p>
           <hr></hr>
-          <p style={{textAlign : 'center'}}><b>Vesikivet ja syvyyskäyrät näkyvät kartalla vain Porvoon eteläpuolella!</b></p>
+          <p style={{textAlign : 'center'}}><b>Vesikivet ja syvyyskäyrät näkyvät kartalla vain Porista etelään!</b></p>
           <ul style={{textAlign : 'left'}}>
             <li>Lähteet ovat lueteltuna sovelluksen oikeassa alareunassa. Jos käytät puhelinta, paina (i) symbolia.</li>
             <li>Emme kerää käyttäjältä dataa. Sovellus ei käytä evästeitä.</li>
@@ -24,39 +24,63 @@ const MapInformation = ({ onClose }) => {
             <tbody>
               <tr>
                 <td style={{minWidth: '90px', textAlign : 'center'}}>
-                    <img src={`${process.env.PUBLIC_URL}/src/icons/navbar/navIcon1.png`} alt="poiju"/>
+                    <img src={`${process.env.PUBLIC_URL}/src/icons/navbar/navIcon1.png`} alt="merkit"/>
                 </td>
                 <td>Näytä tai piilota merimerkit</td>
               </tr>
               <tr>
                 <td style={{textAlign : 'center'}}>
-                    <img src={`${process.env.PUBLIC_URL}/src/icons/navbar/navIcon3.png`} alt="poiju"/>
+                    <img src={`${process.env.PUBLIC_URL}/src/icons/navbar/navIcon3.png`} alt="vaylat"/>
                 </td>
                 <td>Näytä tai piilota väylät ja väyläalueet</td>
               </tr>
               <tr>
                 <td style={{textAlign : 'center'}}>
-                    <img src={`${process.env.PUBLIC_URL}/src/icons/navbar/sektoriloisto.png`} alt="poiju"/>
+                    <img src={`${process.env.PUBLIC_URL}/src/icons/navbar/sektoriloisto.png`} alt="valosektorit"/>
                 </td>
                 <td>Näytä tai piilota valosektorit ja linjataulujen vektorit</td>
               </tr>
               <tr>
                 <td style={{textAlign : 'center'}}>
-                    <img src={`${process.env.PUBLIC_URL}/src/icons/navbar/navIcon5.png`} alt="poiju"/>
+                    <img src={`${process.env.PUBLIC_URL}/src/icons/navbar/navIcon5.png`} alt="reitti"/>
                 </td>
                 <td>Näytä tai piilota oma reitti</td>
               </tr>
               <tr>
                 <td style={{textAlign : 'center'}}>
-                    <img src={`${process.env.PUBLIC_URL}/src/icons/navbar/navIcon2.png`} alt="poiju"/>
+                    <img src={`${process.env.PUBLIC_URL}/src/icons/navbar/navIcon2.png`} alt="meriliikenne"/>
                 </td>
                 <td>Näytä tai piilota meriliikenne (AIS)</td>
               </tr>
               <tr>
                 <td style={{textAlign : 'center'}}>
-                    <img src={`${process.env.PUBLIC_URL}/src/icons/navbar/depthIcon.png`} alt="poiju"/>
+                    <img src={`${process.env.PUBLIC_URL}/src/icons/navbar/depthIcon.png`} alt="syvyyslukemat"/>
                 </td>
-                <td>Näytä tai piilota yksittäiset syvyyslukemat ja syvyysalueet</td>
+                <td>Näytä tai piilota yksittäiset syvyyslukemat ja syvyyskäyrät</td>
+              </tr>
+              <tr>
+                <td style={{textAlign : 'center'}}>
+                    <img style={{height : '46px'}} src={`${process.env.PUBLIC_URL}/src/icons/info-zoom-icons.png`} alt="zoomaus"/>
+                </td>
+                <td>Zoomaa karttaa sisään tai ulos. Paina alinta painiketta palauttaaksesi kartan suunnan normaaliksi.</td>
+              </tr>
+              <tr>
+                <td style={{textAlign : 'center'}}>
+                    <img src={`${process.env.PUBLIC_URL}/src/icons/info-locate-icon.png`} alt="sijainti"/>
+                </td>
+                <td>Etsii ja siirtää kartan laitteesi antamaan sijaintiin</td>
+              </tr>
+              <tr>
+                <td style={{textAlign : 'center'}}>
+                    <img src={`${process.env.PUBLIC_URL}/src/icons/info-ruler-icon.png`} alt="viivain"/>
+                </td>
+                <td>Aktivoi mittatyökalun jonka avulla saat näkyville suunnan ja etäisyyden valitsemaasi kohteeseen kartalla. Oma sijainti tulee olla aktivoituna ensin.</td>
+              </tr>
+              <tr>
+                <td style={{textAlign : 'center'}}>
+                    <img src={`${process.env.PUBLIC_URL}/src/icons/info-merkit-icon.png`} alt="merkkivalitsin"/>
+                </td>
+                <td>Vaihda merimerkkien symbolit karttamerkeistä päivämerkkeihin (väritunnnukset)</td>
               </tr>
             </tbody>
         </table>

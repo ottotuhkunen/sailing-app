@@ -194,7 +194,7 @@ function App() {
         </div>
       )}
       <div class="logo-container">
-        <img src={`${process.env.PUBLIC_URL}/src/icons/logo.png`} alt='logo'></img>
+        <img src={`${process.env.PUBLIC_URL}/src/MeriNavi.svg`} alt='logo' />
       </div>
     </div>
   );

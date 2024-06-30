@@ -59,11 +59,11 @@
 }
 
 .mapboxgl-ctrl-bottom-right {
-  margin-bottom: 52px !important;
+  margin-bottom: 52px;
 }
 
 .mapboxgl-compact {
-  margin-bottom: 52px !important;
+  margin-bottom: 62px !important;
 }
 
 .weather-marker {
@@ -254,7 +254,7 @@
   top: 56px;
   left: 50%; /* Center horizontally */
   transform: translateX(-50%);
-  width: 90%; /* Set width to 80% of screen width */
+  width: 90%; /* S get width to 80% of screen width */
   max-width: 600px; /* Optional: Set maximum width */
   background-color: #dbedef;
   border: 1px solid #ccc;
@@ -322,11 +322,12 @@
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   background: linear-gradient(to bottom, rgba(255, 255, 255, 1), rgba(194, 220, 224, 0.9));
   align-content: center;
+  opacity: 98%;
 }
 
 /* Additional styles for image */
 .logo-container img {
-  width: 120px;
+  width: 140px;
   vertical-align: middle;
 }
 
