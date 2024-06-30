@@ -1,9 +1,6 @@
 import mapboxgl from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import turvalaitteetGeoJSON from '../json-files/turvalaitteet.geojson';
-import valosektoritGeoJSON from '../json-files/valosektorit.geojson';
-import taululinjatGeoJSON from '../json-files/taululinjat.geojson';
-import vesikivetGeoJSON from '../json-files/vesikivet.geojson';
 
 const navlTyypNames = {
   0: 'Tuntematon',
@@ -173,7 +170,7 @@ export const loadTurvalaitteet = (map, iconPath) => {
             filter: ['all', ['==', 'navl_tyyp', navl_tyyp], ['==', 'ty_jnr', ty_jnr]],
             layout: {
               'icon-image': iconName,
-              'icon-size': 0.2,
+              'icon-size': 0.24,
               'icon-allow-overlap': true,
               'icon-anchor': isCenterAnchor ? 'center' : 'bottom'
             },

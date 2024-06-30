@@ -237,7 +237,7 @@ export const loadLiikenne = async (map) => {
     const customAttribution = document.createElement('a');
     customAttribution.href = 'https://www.digitraffic.fi/meriliikenne/';
     customAttribution.target = '_blank'; // new tab
-    customAttribution.innerHTML = ' © Digitraffic';
+    customAttribution.innerHTML = ' © Digitraffic AIS';
     attributionControl.appendChild(customAttribution);
   }
 

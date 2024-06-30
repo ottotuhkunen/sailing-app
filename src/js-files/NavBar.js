@@ -8,6 +8,7 @@ const NavBar = ({ map }) => {
     toggleValosektorit: true,
     toggleReittiButton: true,
     toggleLiikenneButton: true,
+    toggleSoundingButton: true
   });
 
   const toggleLayer = (layerPrefix, buttonId) => {
@@ -72,11 +73,11 @@ const NavBar = ({ map }) => {
         <img src={`${process.env.PUBLIC_URL}/src/icons/navbar/navIcon2.png`} alt="Liikenne" className="nav-icon" />
       </button>
       <button
-        id="toggleWeatherButton"
-        className={`nav-button ${buttonStates.toggleWeatherButton ? '' : 'inactiveButton'}`}
-        onClick={() => toggleLayer('weather', 'toggleWeatherButton')}
+        id="toggleSoundingButton"
+        className={`nav-button ${buttonStates.toggleSoundingButton ? '' : 'inactiveButton'}`}
+        onClick={() => toggleLayer('sounding', 'toggleSoundingButton')}
       >
-        <img src={`${process.env.PUBLIC_URL}/src/icons/navbar/navIcon6.png`} alt="Sää" className="nav-icon" />
+        <img src={`${process.env.PUBLIC_URL}/src/icons/navbar/depthIcon.png`} alt="Syvyys" className="nav-icon" />
       </button>
     </div>
   );

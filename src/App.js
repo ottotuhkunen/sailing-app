@@ -11,6 +11,9 @@ import { loadRace } from './js-files/reitti';
 import { loadLiikenne } from './js-files/liikenne';
 import { loadPlaceNames } from './js-files/placeNames';
 import { initializeLine, drawLine, clearLine } from './js-files/line';
+import { loadSoundingPoints } from './js-files/sounding';
+import { loadDepthContours } from './js-files/sounding';
+import MapInformation from './js-files/mapInformation'; 
 
 mapboxgl.accessToken = 'pk.eyJ1Ijoib3R0b3R1aGt1bmVuIiwiYSI6ImNseG41dW9vaDAwNzQycXNleWI1MmowbHcifQ.1ZMRPeOQ7z9GRzKILnFNAQ';
 
@@ -23,6 +26,7 @@ function App() {
   const [isRulerMode, setIsRulerMode] = useState(false);
   const [mapLoaded, setMapLoaded] = useState(false);
   const [iconPath, setIconPath] = useState(`${process.env.PUBLIC_URL}/src/icons/merkit`);
+  const [showMapInfo, setShowMapInfo] = useState(false);
 
   const initializeMap = () => {
     mapInstanceRef.current = new mapboxgl.Map({
@@ -35,6 +39,7 @@ function App() {
     });
 
     mapInstanceRef.current.on('load', () => {
+      loadDepthContours(mapInstanceRef.current);
       setMapLoaded(true);
       loadVaylat(mapInstanceRef.current);
       loadRace(mapInstanceRef.current);
@@ -42,7 +47,8 @@ function App() {
       loadPlaceNames(mapInstanceRef.current);
       loadAlueet(mapInstanceRef.current);
       loadSektoritJaLinjat(mapInstanceRef.current);
-
+      loadSoundingPoints(mapInstanceRef.current);
+      
       mapInstanceRef.current.addControl(new mapboxgl.NavigationControl());
 
       geolocateControlRef.current = new mapboxgl.GeolocateControl({
@@ -163,6 +169,10 @@ function App() {
     );
   };
 
+  const toggleMapInfo = () => {
+    setShowMapInfo(!showMapInfo);
+  };
+
   return (
     <div className="App">
       <div id="map" className="map-container" ref={mapContainerRef} />
@@ -173,6 +183,10 @@ function App() {
       <button className="toggle-markers-button" onClick={toggleIconPath}>
         <img src={`${process.env.PUBLIC_URL}/src/icons/symbolTypeSelector.png`} alt="Toggle Markers" />
       </button>
+      <button className="map-information-button" onClick={toggleMapInfo}>
+        <p>Tietoa</p>
+      </button>
+      {showMapInfo && <MapInformation onClose={toggleMapInfo} />}
       {info && (
         <div className="info-box">
           <p>Suunta: {info.bearing}° Matka: {info.distance} NM</p>

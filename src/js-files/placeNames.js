@@ -50,7 +50,7 @@ export const loadPlaceNames = (map) => {
     const customAttribution = document.createElement('a');
     customAttribution.href = 'https://www.maanmittauslaitos.fi/kartat-ja-paikkatieto/aineistot-ja-rajapinnat/tuotekuvaukset/nimisto';
     customAttribution.target = '_blank'; // new tab
-    customAttribution.innerHTML = ' © Maanmittauslaitos nimistö 2024';
+    customAttribution.innerHTML = ' © Maanmittauslaitos nimistö & vesikivet 2024';
     attributionControl.appendChild(customAttribution);
   }
 

@@ -48,10 +48,10 @@ export const loadSektoritJaLinjat = (map) => {
     const customAttribution = document.createElement('a');
     customAttribution.href = 'https://www.paikkatietohakemisto.fi/geonetwork/srv/fin/catalog.search#/metadata/bc585b68-837a-4609-85cd-3a17cac7c3de';
     customAttribution.target = '_blank';
-    customAttribution.innerHTML = ' © Väylävirasto vesiväyläaineisto';
+    customAttribution.innerHTML = ' © Väylävirasto vesiväyläaineisto 2024';
     attributionControl.appendChild(customAttribution);
   }
-  
+
   // Load valosektorit.geojson data
   fetch(valosektoritGeoJSON)
     .then(response => response.json())
@@ -145,20 +145,22 @@ export const loadSektoritJaLinjat = (map) => {
     source: 'vesikivet',
     layout: {
       'text-field': '+', // Display "+" at each stone
-      'text-size': 14,
+      'text-size': 15,
       'text-anchor': 'center',
       'text-allow-overlap': true
     },
     paint: {
-      'text-color': '#000000'
+      'text-color': 'black',
+      'text-halo-color': 'red',
+      'text-halo-width': 0.5
     },
     minzoom: 12
-  });
+  });  
 };
 
 function createSectorArcGeoJSON(coordinates, startBearing, endBearing, color) {
-  const radius = 0.005; // Adjust radius for better visibility
-  const separationAngle = 0.1; // Slight separation angle in degrees
+  const radius = 0.005;
+  const separationAngle = 0.1; // Slight separation angle in degrees (to make sectors clear)
 
   // Normalize start and end bearings to be within [0, 360) degrees
   let normalizedStartBearing = startBearing % 360;
