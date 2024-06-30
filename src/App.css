@@ -59,7 +59,11 @@
 }
 
 .mapboxgl-ctrl-bottom-right {
-  margin-bottom: 52px;
+  margin-bottom: 52px !important;
+}
+
+.mapboxgl-compact {
+  margin-bottom: 52px !important;
 }
 
 .weather-marker {
@@ -252,7 +256,7 @@
   transform: translateX(-50%);
   width: 90%; /* Set width to 80% of screen width */
   max-width: 600px; /* Optional: Set maximum width */
-  background-color: #d0f3ff;
+  background-color: #dbedef;
   border: 1px solid #ccc;
   border-radius: 5px;
   padding: 10px;
@@ -324,4 +328,8 @@
 .logo-container img {
   width: 120px;
   vertical-align: middle;
+}
+
+.button-info-table {
+  text-align: left;
 }

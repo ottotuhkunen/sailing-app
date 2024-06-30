@@ -56,7 +56,7 @@ const NavBar = ({ map }) => {
           toggleLayer('taululinjat', 'toggleValosektorit');
         }}
       >
-        <img src={`${process.env.PUBLIC_URL}/src/icons/paivamerkit/sektoriloisto.png`} alt="Sektorit" className="nav-icon" />
+        <img src={`${process.env.PUBLIC_URL}/src/icons/navbar/sektoriloisto.png`} alt="Sektorit" className="nav-icon" />
       </button>
       <button
         id="toggleReittiButton"

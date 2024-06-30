@@ -8,9 +8,10 @@ const MapInformation = ({ onClose }) => {
       <div className="map-info-container">
         <div className="info-header">
           <h2>Karttasovelluksen käyttö</h2>
-          <p>Kartan on suunnitellut ja toteuttanut <b>Otto Tuhkunen 2024</b></p>
-          <p style={{color : 'darkred'}}>Kartta ei ole navigointikäyttöön, eikä se täytä asianmukaisen merikartan vaatimuksia.</p>
-          <p><b>⚠️ Vesikivet ja syvyyskäyrät näkyvät kartalla vain Porvoon eteläpuolella!</b></p>
+          <p style={{textAlign : 'center'}}>Kartan on suunnitellut ja toteuttanut Otto Tuhkunen</p>
+          <p style={{color : 'darkred', textAlign: 'center', fontWeight: 'bold'}}>Kartta ei ole navigointikäyttöön, eikä se täytä asianmukaisen merikartan vaatimuksia.</p>
+          <hr></hr>
+          <p style={{textAlign : 'center'}}><b>Vesikivet ja syvyyskäyrät näkyvät kartalla vain Porvoon eteläpuolella!</b></p>
           <ul style={{textAlign : 'left'}}>
             <li>Lähteet ovat lueteltuna sovelluksen oikeassa alareunassa. Jos käytät puhelinta, paina (i) symbolia.</li>
             <li>Emme kerää käyttäjältä dataa. Sovellus ei käytä evästeitä.</li>
@@ -18,8 +19,49 @@ const MapInformation = ({ onClose }) => {
           <button className="close-button" onClick={onClose}>X</button>
         </div>
         <hr></hr>
+        <h3>Painikkeet</h3>
+        <table className='button-info-table'>
+            <tbody>
+              <tr>
+                <td style={{minWidth: '90px', textAlign : 'center'}}>
+                    <img src={`${process.env.PUBLIC_URL}/src/icons/navbar/navIcon1.png`} alt="poiju"/>
+                </td>
+                <td>Näytä tai piilota merimerkit</td>
+              </tr>
+              <tr>
+                <td style={{textAlign : 'center'}}>
+                    <img src={`${process.env.PUBLIC_URL}/src/icons/navbar/navIcon3.png`} alt="poiju"/>
+                </td>
+                <td>Näytä tai piilota väylät ja väyläalueet</td>
+              </tr>
+              <tr>
+                <td style={{textAlign : 'center'}}>
+                    <img src={`${process.env.PUBLIC_URL}/src/icons/navbar/sektoriloisto.png`} alt="poiju"/>
+                </td>
+                <td>Näytä tai piilota valosektorit ja linjataulujen vektorit</td>
+              </tr>
+              <tr>
+                <td style={{textAlign : 'center'}}>
+                    <img src={`${process.env.PUBLIC_URL}/src/icons/navbar/navIcon5.png`} alt="poiju"/>
+                </td>
+                <td>Näytä tai piilota oma reitti</td>
+              </tr>
+              <tr>
+                <td style={{textAlign : 'center'}}>
+                    <img src={`${process.env.PUBLIC_URL}/src/icons/navbar/navIcon2.png`} alt="poiju"/>
+                </td>
+                <td>Näytä tai piilota meriliikenne (AIS)</td>
+              </tr>
+              <tr>
+                <td style={{textAlign : 'center'}}>
+                    <img src={`${process.env.PUBLIC_URL}/src/icons/navbar/depthIcon.png`} alt="poiju"/>
+                </td>
+                <td>Näytä tai piilota yksittäiset syvyyslukemat ja syvyysalueet</td>
+              </tr>
+            </tbody>
+        </table>
+        <hr></hr>
         <h3>Karttatietojen selitykset</h3>
-        <div className="info-content">
           <table style={{textAlign : 'left'}}>
             <tbody>
               <tr>
@@ -166,21 +208,8 @@ const MapInformation = ({ onClose }) => {
                 </td>
                 <td>Viranomainen</td>
               </tr>
-              <tr>
-                <td>..</td>
-                <td>..</td>
-              </tr>
-              <tr>
-                <td>..</td>
-                <td>..</td>
-              </tr>
-              <tr>
-                <td>..</td>
-                <td>..</td>
-              </tr>
             </tbody>
           </table>
-        </div>
       </div>
     </>
   );
