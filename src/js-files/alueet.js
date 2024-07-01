@@ -143,7 +143,6 @@ export const loadAlueet = (map) => {
             const coordinates = e.features[0].geometry.coordinates.slice();
             const description = 'Ankkuripaikka';
 
-            // Ensure that if the map is zoomed out such that multiple copies of the feature are visible, the popup appears over the copy being clicked on
             while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
                 coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
             }
@@ -154,12 +153,9 @@ export const loadAlueet = (map) => {
                 .addTo(map);
         });
 
-        // Change the cursor to a pointer when the mouse is over the ankkuripaikat-layer
         map.on('mouseenter', 'ankkuripaikat-layer', () => {
             map.getCanvas().style.cursor = 'pointer';
         });
-
-        // Change it back to a pointer when it leaves
         map.on('mouseleave', 'ankkuripaikat-layer', () => {
             map.getCanvas().style.cursor = '';
         });
@@ -203,4 +199,61 @@ export const loadAlueet = (map) => {
     .catch(error => {
         console.error('Error loading GeoJSON data for ankkuripaikat:', error);
     });
+
+    // get shoreline constructions from Mapbox tilesets
+    map.addLayer({
+        id: 'shoreline-constructions',
+        type: 'line',
+        source: {
+            type: 'vector',
+            url: 'mapbox://ottotuhkunen.21ynagfx'
+        },
+        'source-layer': 'shorelineConstructions-cuddjl',
+        paint: {
+            'line-color': 'brown',
+            'line-width': 2,
+        },
+        layout: {
+            visibility: 'visible'
+        },
+        minzoom: 11
+    });
+
+        // get territorial sea area from Mapbox tilesets
+        map.addLayer({
+            id: 'territorial-sea-area',
+            type: 'fill',
+            source: {
+                type: 'vector',
+                url: 'mapbox://ottotuhkunen.2zdttf0d'
+            },
+            'source-layer': 'territorialSeaArea-0iv2gg',
+            paint: {
+                'fill-color': '#df34c8',
+                'fill-opacity': 0.3,
+                'fill-outline-color': '#df34c8'
+            },
+            layout: {
+                visibility: 'visible'
+            },
+            minzoom: 4
+        });
+        
+        // Add click event listener for the territorial sea area layer
+        map.on('click', 'territorial-sea-area', function (e) {
+            new mapboxgl.Popup()
+                .setLngLat(e.lngLat)
+                .setHTML('<strong>Finland Territorial Sea Area</strong>')
+                .addTo(map);
+        });
+        
+        // Change the cursor to a pointer when the mouse is over the territorial sea area layer
+        map.on('mouseenter', 'territorial-sea-area', function () {
+            map.getCanvas().style.cursor = 'pointer';
+        });
+        
+        // Change the cursor back to the default when the mouse leaves the territorial sea area layer
+        map.on('mouseleave', 'territorial-sea-area', function () {
+            map.getCanvas().style.cursor = '';
+        });        
 };
