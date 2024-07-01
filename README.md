@@ -59,7 +59,7 @@ The map is designed to be used in the Finnish territorial sea.
 Screenshots are taken 1 Jul 2024 and may be outdated.
 
 <img src="./images/screenshot1.png" alt="plot">
-<img src="./images/screenshot2.jpeg" alt="plot">
-<img src="./images/screenshot3.jpeg" alt="plot">
+<img src="./images/screenshot2.png" alt="plot">
+<img src="./images/screenshot3.png" alt="plot">
 
 App is made and updated by Otto Tuhkunen.
