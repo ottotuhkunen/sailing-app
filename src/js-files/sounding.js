@@ -55,7 +55,12 @@ export const loadDepthContours = (mapInstance) => {
             '10', 'transparent',
             'transparent'
         ],
-        'fill-outline-color': 'lightblue', // Outline with blue
+        'fill-outline-color': [
+            'match',
+            ['get', 'DRVAL1'],
+            '10', '#DDF6FF',
+            'transparent' // Default outline color
+        ]
         },
         layout: {
             visibility: 'visible'

@@ -140,7 +140,7 @@ const updateVesselPositions = (map, locationsData, vesselsByMMSI) => {
           newHeading: heading,
           newCoordinates: currentPos,
           lastUpdate,
-          icon: map.hasImage(iconName) ? iconName : 'Ei_tietoa.png'
+          icon: map.hasImage(iconName) ? iconName : `${process.env.PUBLIC_URL}/src/icons/vessels/Ei_tietoa.png`
         }
       };
     }
