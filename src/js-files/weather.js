@@ -1,83 +1,84 @@
-/*
+import axios from 'axios';
 import mapboxgl from 'mapbox-gl';
 
-mapboxgl.accessToken = 'YOUR_MAPBOX_ACCESS_TOKEN';
+const weatherUrl = 'https://opendata.fmi.fi/wfs?request=GetFeature&storedquery_id=fmi::observations::weather::multipointcoverage&bbox=19.1,59.7,29.0,70.1&timestep=10';
 
-const weatherFmisids = [
-  100947, 100949, 101851, 101846, 101783, 101784, 101794, 101785, 101775,
-  101673, 101661, 101660, 101675, 101464, 101479, 101481, 101256, 101268,
-  101267, 101061, 101059, 100919, 100928, 100909, 151048, 151029, 100921,
-  100908
-];
-
-export const fetchWeatherData = async () => {
-  const { startTime, endTime } = getTimes(); // Get start and end times
-
-  // Define the bounding box for the API request
-  const bbox = '22,64,24,68'; // Example bbox coordinates (adjust as needed)
-  const parameters = 'ws_10min'; // Example parameter (wind speed)
-  const crs = 'EPSG::4326'; // Example CRS (coordinate reference system)
-
-  const apiUrl = `https://opendata.fmi.fi/wfs?service=WFS&version=2.0.0&request=getFeature&storedquery_id=fmi::observations::weather::timevaluepair&bbox=${bbox}&parameters=${parameters}&crs=${crs}&starttime=${startTime}&endtime=${endTime}&timestep=60`;
-
+export const loadWeather = async (map, dataType) => {
   try {
-    const response = await fetch(apiUrl);
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
+    const response = await axios.get(weatherUrl);
+    const data = new window.DOMParser().parseFromString(response.data, 'text/xml');
+    const points = data.getElementsByTagName('gml:Point');
+    const valuesList = data.getElementsByTagName('gml:doubleOrNilReasonTupleList')[0].textContent.trim().split(/\s+/);
+    const observationsPerPoint = 13; // Number of values per observation point (as indicated by the example XML)
+
+    // Map of indices for different data types in the tuple list
+    const dataTypeIndices = {
+      't2m': 0,        // temperature
+      'ws_10min': 1,   // wind speed
+      'wg_10min': 2,   // maximum wind
+      'wd_10min': 3,   // wind direction
+      // Add other data types as needed
+    };
+
+    // Get the index of the chosen data type
+    const dataTypeIndex = dataTypeIndices[dataType];
+
+    // Ensure the data type is valid
+    if (dataTypeIndex === undefined) {
+      console.error('Invalid data type selected');
+      return;
     }
 
-    const data = await response.text();
-    const observations = parseWeatherData(data);
-    return observations;
+    // Iterate over each point (location)
+    for (let i = 0; i < points.length; i++) {
+      const point = points[i];
+      const coords = point.getElementsByTagName('gml:pos')[0].textContent.split(' ');
+
+      // Extract the relevant value based on the selected data type
+      const value = parseFloat(valuesList[i * observationsPerPoint + dataTypeIndex]);
+
+      // Special handling for wind speed to set icon name and rotation
+      let iconName = 'weather'; // Default icon
+      let windDirection = 0; // Default wind direction
+      if (dataType === 'ws_10min') { // If wind speed
+        const windSpeed = value;
+        windDirection = parseFloat(valuesList[i * observationsPerPoint + dataTypeIndices['wd_10min']]);
+        if (windSpeed > 14) {
+          iconName = 'windStrong';
+        } else if (windSpeed > 7) {
+          iconName = 'windModerate';
+        } else {
+          iconName = 'windCalm';
+        }
+      }
+
+      // Create a container for the marker with icon and text
+      const container = document.createElement('div');
+      container.className = 'marker-container';
+
+      // Create the text element
+      const text = document.createElement('div');
+      text.className = 'weather-text';
+      text.innerText = value.toFixed(1); // Display value rounded to 1 decimal place
+      container.appendChild(text);
+
+      // Create the icon element
+      const icon = document.createElement('div');
+      icon.className = 'weather-marker';
+      icon.style.backgroundImage = `url(${process.env.PUBLIC_URL}/src/icons/${iconName}.png)`;
+      icon.style.backgroundSize = 'cover';
+      icon.style.width = '31px';
+      icon.style.transform = `rotate(${windDirection+180}deg)`; // Rotate the icon
+      container.appendChild(icon);
+
+
+
+      // Add marker to map
+      new mapboxgl.Marker(container)
+        .setLngLat([parseFloat(coords[1]), parseFloat(coords[0])])
+        .addTo(map);
+    }
   } catch (error) {
-    console.error('Fetch API error -', error);
-    return null;
+    console.error('Error loading weather data:', error);
   }
 };
-
-// Get the current time in ISO format (for data fetching)
-const getTimes = () => {
-  const now = new Date();
-  const startTime = new Date(now);
-  startTime.setMinutes(now.getMinutes() - 15); // startTime 15 mins ago
-  startTime.setSeconds(0, 0);
-
-  // Round the current time to the nearest even minute, minus 1 minute
-  const roundedMinutes = now.getMinutes() - (now.getMinutes() % 2) - 1;
-  now.setMinutes(roundedMinutes);
-  now.setSeconds(0, 0);
-
-  return {
-    startTime: startTime.toISOString(),
-    endTime: now.toISOString()
-  };
-};
-
-// Parse weather data from XML to JSON
-const parseWeatherData = (xmlText) => {
-  const parser = new DOMParser();
-  const xmlDoc = parser.parseFromString(xmlText, 'application/xml');
-  const members = xmlDoc.getElementsByTagName('wfs:member');
-  const observations = [];
-
-  for (let i = 0; i < members.length; i++) {
-    const member = members[i];
-    const time = member.getElementsByTagName('BsWfs:Time')[0]?.textContent;
-    const parameterName = member.getElementsByTagName('BsWfs:ParameterName')[0]?.textContent;
-    const parameterValue = member.getElementsByTagName('BsWfs:ParameterValue')[0]?.textContent;
-    const pos = member.getElementsByTagName('gml:pos')[0]?.textContent?.split(' ');
-    const lon = parseFloat(pos[1]);
-    const lat = parseFloat(pos[0]);
-
-    if (parameterName === 'ws_10min') {
-      const windSpeed = parseFloat(parameterValue);
-      const windDirection = parseFloat(member.getElementsByTagName('BsWfs:ParameterValue')[1]?.textContent);
-      const windGust = parseFloat(member.getElementsByTagName('BsWfs:ParameterValue')[2]?.textContent);
-      
-      observations.push({ time, lon, lat, windSpeed, windDirection, windGust });
-    }
-  }
-
-  return observations;
-};
-*/

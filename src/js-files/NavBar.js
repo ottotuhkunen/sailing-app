@@ -8,7 +8,8 @@ const NavBar = ({ map }) => {
     toggleValosektorit: true,
     toggleReittiButton: true,
     toggleLiikenneButton: true,
-    toggleSoundingButton: true
+    toggleSoundingButton: true,
+    toggleharboursButton: false
   });
 
   const toggleLayer = (layerPrefix, buttonId) => {
@@ -77,7 +78,7 @@ const NavBar = ({ map }) => {
         className={`nav-button ${buttonStates.toggleharboursButton ? '' : 'inactiveButton'}`}
         onClick={() => toggleLayer('harbours', 'toggleharboursButton')}
       >
-        <img src={`${process.env.PUBLIC_URL}/src/icons/navBar/harbour.png`} alt="Syvyys" className="nav-icon" />
+        <img src={`${process.env.PUBLIC_URL}/src/icons/navbar/harbour.png`} alt="Satama" className="nav-icon" />
       </button>
     </div>
   );

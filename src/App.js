@@ -13,6 +13,7 @@ import { loadPlaceNames } from './js-files/placeNames';
 import { initializeLine, drawLine, clearLine } from './js-files/line';
 import { loadSoundingPoints } from './js-files/sounding';
 import { loadDepthContours } from './js-files/sounding';
+// import { loadWeather } from './js-files/weather';
 import MapInformation from './js-files/mapInformation'; 
 
 mapboxgl.accessToken = 'pk.eyJ1Ijoib3R0b3R1aGt1bmVuIiwiYSI6ImNseG41dW9vaDAwNzQycXNleWI1MmowbHcifQ.1ZMRPeOQ7z9GRzKILnFNAQ';
@@ -27,6 +28,7 @@ function App() {
   const [mapLoaded, setMapLoaded] = useState(false);
   const [iconPath, setIconPath] = useState(`${process.env.PUBLIC_URL}/src/icons/merkit`);
   const [showMapInfo, setShowMapInfo] = useState(false);
+  const [selectedDataType, setSelectedDataType] = useState('ws_10min');
 
   const initializeMap = () => {
     mapInstanceRef.current = new mapboxgl.Map({
@@ -48,6 +50,7 @@ function App() {
       loadAlueet(mapInstanceRef.current);
       loadSektoritJaLinjat(mapInstanceRef.current);
       loadSoundingPoints(mapInstanceRef.current);
+      // loadWeather(mapInstanceRef.current, selectedDataType);
       
       mapInstanceRef.current.addControl(new mapboxgl.NavigationControl());
 
@@ -82,6 +85,12 @@ function App() {
       mapInstance.remove();
     };
   }, []);
+
+  useEffect(() => {
+    if (mapLoaded) {
+      // loadWeather(mapInstanceRef.current, selectedDataType);
+    }
+  }, [selectedDataType, mapLoaded]);
 
   useEffect(() => {
     const mapInstance = mapInstanceRef.current;
@@ -173,6 +182,10 @@ function App() {
     setShowMapInfo(!showMapInfo);
   };
 
+  const handleDataTypeChange = (e) => {
+    setSelectedDataType(e.target.value);
+  };
+
   return (
     <div className="App">
       <div id="map" className="map-container" ref={mapContainerRef} />
@@ -186,6 +199,13 @@ function App() {
       <button className="map-information-button" onClick={toggleMapInfo}>
         <p>Tietoa</p>
       </button>
+      <div className="data-type-selector">
+        <select id="data-type" value={selectedDataType} onChange={handleDataTypeChange}>
+          <option value="ws_10min">Wind Speed</option>
+          <option value="wg_10min">Maximum Wind Speed</option>
+          {/* Add more options as needed */}
+        </select>
+      </div>
       {showMapInfo && <MapInformation onClose={toggleMapInfo} />}
       {info && (
         <div className="info-box">
