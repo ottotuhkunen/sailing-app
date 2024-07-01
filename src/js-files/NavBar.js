@@ -59,13 +59,6 @@ const NavBar = ({ map }) => {
         <img src={`${process.env.PUBLIC_URL}/src/icons/navbar/sektoriloisto.png`} alt="Sektorit" className="nav-icon" />
       </button>
       <button
-        id="toggleReittiButton"
-        className={`nav-button ${buttonStates.toggleReittiButton ? '' : 'inactiveButton'}`}
-        onClick={() => toggleLayer('race', 'toggleReittiButton')}
-      >
-        <img src={`${process.env.PUBLIC_URL}/src/icons/navbar/navIcon5.png`} alt="Reitti" className="nav-icon" />
-      </button>
-      <button
         id="toggleLiikenneButton"
         className={`nav-button ${buttonStates.toggleLiikenneButton ? '' : 'inactiveButton'}`}
         onClick={() => toggleLayer('liikenne', 'toggleLiikenneButton')}
@@ -79,8 +72,27 @@ const NavBar = ({ map }) => {
       >
         <img src={`${process.env.PUBLIC_URL}/src/icons/navbar/depthIcon.png`} alt="Syvyys" className="nav-icon" />
       </button>
+      <button
+        id="toggleharboursButton"
+        className={`nav-button ${buttonStates.toggleharboursButton ? '' : 'inactiveButton'}`}
+        onClick={() => toggleLayer('harbours', 'toggleharboursButton')}
+      >
+        <img src={`${process.env.PUBLIC_URL}/src/icons/navBar/harbour.png`} alt="Syvyys" className="nav-icon" />
+      </button>
     </div>
   );
 };
 
 export default NavBar;
+
+/*
+Route button:
+
+<button
+  id="toggleReittiButton"
+  className={`nav-button ${buttonStates.toggleReittiButton ? '' : 'inactiveButton'}`}
+  onClick={() => toggleLayer('race', 'toggleReittiButton')}
+>
+  <img src={`${process.env.PUBLIC_URL}/src/icons/navbar/navIcon5.png`} alt="Reitti" className="nav-icon" />
+</button>
+*/

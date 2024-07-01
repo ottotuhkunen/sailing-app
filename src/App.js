@@ -42,7 +42,7 @@ function App() {
       loadDepthContours(mapInstanceRef.current);
       setMapLoaded(true);
       loadVaylat(mapInstanceRef.current);
-      loadRace(mapInstanceRef.current);
+      // loadRace(mapInstanceRef.current);
       loadLiikenne(mapInstanceRef.current);
       loadPlaceNames(mapInstanceRef.current);
       loadAlueet(mapInstanceRef.current);
