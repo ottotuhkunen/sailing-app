@@ -32,8 +32,8 @@ The map is only functional in Finnish territorial waters, lakes and rivers.
 
 ## Images
 
-<img src="./images/desktop1.png" alt="plot" style="max-width: 100%; height: auto;">
-
-<img src="./images/desktop2.jpeg" alt="plot" style="max-width: 660px; height: auto;">
+<img src="./images/screenshot1.png" alt="plot">
+<img src="./images/screenshot2.jpeg" alt="plot">
+<img src="./images/screenshot3.jpeg" alt="plot">
 
 App is made and updated by Otto Tuhkunen.
