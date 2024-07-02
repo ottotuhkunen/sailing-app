@@ -134,7 +134,7 @@ export const loadVesiliikennemerkit = async (mapInstance) => {
         layout: {
             'icon-image': iconNameExpression,
             'icon-size': 0.4,
-            'icon-allow-overlap': false,
+            'icon-allow-overlap': true,
             'text-field': [
                 'case',
                 ['any',

@@ -23,40 +23,46 @@ const MapInformation = ({ onClose }) => {
         <table className='button-info-table'>
             <tbody>
               <tr>
-                <td style={{minWidth: '90px', textAlign : 'center'}}>
+                <td id='navBarButtonInfo' style={{minWidth: '90px', textAlign : 'center'}}>
                     <img src={`${process.env.PUBLIC_URL}/src/icons/navbar/navIcon1.png`} alt="merkit"/>
                 </td>
                 <td>Näytä tai piilota merimerkit</td>
               </tr>
               <tr>
-                <td style={{textAlign : 'center'}}>
+                <td id='navBarButtonInfo' style={{textAlign : 'center'}}>
                     <img src={`${process.env.PUBLIC_URL}/src/icons/navbar/navIcon3.png`} alt="vaylat"/>
                 </td>
                 <td>Näytä tai piilota väylät ja väyläalueet</td>
               </tr>
               <tr>
-                <td style={{textAlign : 'center'}}>
+                <td id='navBarButtonInfo' style={{textAlign : 'center'}}>
                     <img src={`${process.env.PUBLIC_URL}/src/icons/navbar/sektoriloisto.png`} alt="valosektorit"/>
                 </td>
                 <td>Näytä tai piilota valosektorit ja linjataulujen vektorit</td>
               </tr>
               <tr>
-                <td style={{textAlign : 'center'}}>
-                    <img src={`${process.env.PUBLIC_URL}/src/icons/navbar/navIcon5.png`} alt="reitti"/>
+                <td id='navBarButtonInfo' style={{textAlign : 'center'}}>
+                    <img src={`${process.env.PUBLIC_URL}/src/icons/navbar/depthIcon.png`} alt="syvyyslukemat"/>
                 </td>
-                <td>Näytä tai piilota oma reitti</td>
+                <td>Näytä tai piilota yksittäiset syvyyslukemat ja syvyyskäyrät</td>
               </tr>
               <tr>
-                <td style={{textAlign : 'center'}}>
+                <td id='navBarButtonInfo' style={{textAlign : 'center'}}>
                     <img src={`${process.env.PUBLIC_URL}/src/icons/navbar/navIcon2.png`} alt="meriliikenne"/>
                 </td>
                 <td>Näytä tai piilota meriliikenne (AIS)</td>
               </tr>
               <tr>
-                <td style={{textAlign : 'center'}}>
-                    <img src={`${process.env.PUBLIC_URL}/src/icons/navbar/depthIcon.png`} alt="syvyyslukemat"/>
+                <td id='navBarButtonInfo' style={{textAlign : 'center'}}>
+                    <img src={`${process.env.PUBLIC_URL}/src/icons/navbar/waterSigns.png`} alt="vesiliikennemerkit"/>
                 </td>
-                <td>Näytä tai piilota yksittäiset syvyyslukemat ja syvyyskäyrät</td>
+                <td>Näytä tai piillota vesiliikennemerkit ja rajoitusalueet</td>
+              </tr>
+              <tr>
+                <td id='navBarButtonInfo' style={{textAlign : 'center'}}>
+                    <img src={`${process.env.PUBLIC_URL}/src/icons/navbar/harbour.png`} alt="satamat"/>
+                </td>
+                <td>Näytä tai piillota vierasvenesatamat ja palvelusatamat</td>
               </tr>
               <tr>
                 <td style={{textAlign : 'center'}}>

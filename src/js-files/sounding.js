@@ -68,6 +68,8 @@ export const loadDepthContours = (mapInstance) => {
         minzoom: 11
     });
 
+    mapInstance.moveLayer('depth-area-1', 'bridge-street-navigation');
+
     // Load depth area second tileset
     mapInstance.addLayer({
         id: 'depth-area-2',
@@ -84,6 +86,12 @@ export const loadDepthContours = (mapInstance) => {
                 '0', '#48C1FE',
                 '10', 'transparent',
                 'transparent'
+            ],
+            'fill-outline-color': [
+                'match',
+                ['get', 'DRVAL1'],
+                '10', '#DDF6FF',
+                'transparent' // Default outline color
             ]
             },
             layout: {
@@ -91,6 +99,25 @@ export const loadDepthContours = (mapInstance) => {
             },
         minzoom: 11
     });
+
+    // Move the depth areas below all layers that start with 'bridge'
+    var layers = mapInstance.getStyle().layers;
+    var firstBridgeLayerId = null;
+
+    for (var i = 0; i < layers.length; i++) {
+        var layer = layers[i];
+        if (layer.id.startsWith('bridge')) {
+            firstBridgeLayerId = layer.id;
+            break;
+        }
+    }
+
+    if (firstBridgeLayerId) {
+        mapInstance.moveLayer('depth-area-1', firstBridgeLayerId);
+        mapInstance.moveLayer('depth-area-2', firstBridgeLayerId);
+    } else {
+        console.warn('No layer starting with "bridge" found.');
+    }
 
     mapInstance.addLayer({
         id: 'sounding-contours',

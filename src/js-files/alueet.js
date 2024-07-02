@@ -219,6 +219,25 @@ export const loadAlueet = (map) => {
         minzoom: 11
     });
 
+        // get bridges from Mapbox tilesets (Maanmittauslaitos)
+        map.addLayer({
+            id: 'bridges-maanmittauslaitos',
+            type: 'line',
+            source: {
+                type: 'vector',
+                url: 'mapbox://ottotuhkunen.5flcwgzb'
+            },
+            'source-layer': 'bridges-bdikop',
+            paint: {
+                'line-color': 'red',
+                'line-width': 4,
+            },
+            layout: {
+                visibility: 'visible'
+            },
+            minzoom: 11
+        });
+
     // Add the fill layer for the territorial sea area
     map.addLayer({
         id: 'territorial-sea-area',

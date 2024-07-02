@@ -359,6 +359,12 @@ p {
   text-align: left;
 }
 
+.button-info-table img {
+  text-align: left;
+  max-width: 26px;
+  height: auto;
+}
+
 .data-type-selector {
   position: absolute;
   top: 50px;
@@ -391,4 +397,8 @@ p {
   position: relative;
   width: 31px;
   background-size: cover;
+}
+
+#navBarButtonInfo img{
+  filter: brightness(0);
 }
