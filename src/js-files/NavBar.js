@@ -1,5 +1,8 @@
 import React, { useState } from 'react';
 import '../App.css';
+import { loadLiikenne } from './liikenne';
+import { loadVesiliikennemerkit } from './vesiliikennemerkit'; 
+import { loadHarbours } from './placeNames';
 
 const NavBar = ({ map }) => {
   const [buttonStates, setButtonStates] = useState({
@@ -7,19 +10,28 @@ const NavBar = ({ map }) => {
     toggleVaylatButton: true,
     toggleValosektorit: true,
     toggleReittiButton: true,
-    toggleLiikenneButton: true,
     toggleSoundingButton: true,
+    toggleLiikenneButton: false,
     toggleLiikennemerkitButton: false,
     toggleharboursButton: false
   });
+
+  // if toggleLiikenneButton, toggleLiikennemerkitButton or toggleharboursButton is clicked the first time 
+  // (corresponding map layers are not found on mapbox)
+  // then add those layers here:
+  // loadLiikenne(map);
+  // loadVesiliikennemerkit(map);
+  // loadHarbours(map);
+
 
   const toggleLayer = (layerPrefix, buttonId) => {
     if (!map || !map.getStyle || !map.getStyle()?.layers) {
       console.error("Map style or layers are undefined");
       return;
     }
-
+  
     let newVisibility = 'none';
+  
     map.getStyle().layers.forEach((layer) => {
       if (layer.id.startsWith(layerPrefix)) {
         const visibility = map.getLayoutProperty(layer.id, 'visibility');
@@ -27,12 +39,35 @@ const NavBar = ({ map }) => {
         map.setLayoutProperty(layer.id, 'visibility', newVisibility);
       }
     });
-
+  
+    // Check if the layer exists on the map
+    const layerExists = map.getStyle().layers.some(layer => layer.id.startsWith(layerPrefix));
+    
+    if (!layerExists) {
+      switch (layerPrefix) {
+        case 'liikenne':
+          loadLiikenne(map);
+          newVisibility = 'visible';
+          break;
+        case 'vesiliikennemerkit':
+          loadVesiliikennemerkit(map);
+          newVisibility = 'visible';
+          break;
+        case 'harbours':
+          loadHarbours(map);
+          newVisibility = 'visible';
+          break;
+        default:
+          break;
+      }
+    }
+      
     setButtonStates((prevStates) => ({
       ...prevStates,
       [buttonId]: newVisibility === 'visible',
     }));
   };
+  
 
   return (
     <div className="nav-bar">
@@ -93,15 +128,3 @@ const NavBar = ({ map }) => {
 };
 
 export default NavBar;
-
-/*
-Route button:
-
-<button
-  id="toggleReittiButton"
-  className={`nav-button ${buttonStates.toggleReittiButton ? '' : 'inactiveButton'}`}
-  onClick={() => toggleLayer('race', 'toggleReittiButton')}
->
-  <img src={`${process.env.PUBLIC_URL}/src/icons/navbar/navIcon5.png`} alt="Reitti" className="nav-icon" />
-</button>
-*/

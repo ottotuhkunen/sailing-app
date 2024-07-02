@@ -219,7 +219,7 @@ export const loadAlueet = (map) => {
         minzoom: 11
     });
 
-    // get territorial sea area from Mapbox tilesets
+    // Add the fill layer for the territorial sea area
     map.addLayer({
         id: 'territorial-sea-area',
         type: 'fill',
@@ -229,7 +229,7 @@ export const loadAlueet = (map) => {
         },
         'source-layer': 'territorialSeaArea-0iv2gg',
         paint: {
-            'fill-color': '#df34c8',
+            'fill-color': '#920094',
             'fill-opacity': 0.3,
             'fill-outline-color': '#df34c8'
         },
@@ -238,23 +238,30 @@ export const loadAlueet = (map) => {
         },
         minzoom: 4
     });
-    
-    // Add click event listener for the territorial sea area layer
-    map.on('click', 'territorial-sea-area', function (e) {
-        new mapboxgl.Popup()
-            .setLngLat(e.lngLat)
-            .setHTML('<strong>Finland Territorial Sea Area</strong>')
-            .addTo(map);
-    });
-    
-    // Change the cursor to a pointer when the mouse is over the territorial sea area layer
-    map.on('mouseenter', 'territorial-sea-area', function () {
-        map.getCanvas().style.cursor = 'pointer';
-    });
-    
-    // Change the cursor back to the default when the mouse leaves the territorial sea area layer
-    map.on('mouseleave', 'territorial-sea-area', function () {
-        map.getCanvas().style.cursor = '';
+
+    // Add a symbol layer to display text labels along the edges of the territorial sea area
+    map.addLayer({
+        id: 'territorial-sea-area-labels',
+        type: 'symbol',
+        source: {
+            type: 'vector',
+            url: 'mapbox://ottotuhkunen.2zdttf0d'
+        },
+        'source-layer': 'territorialSeaArea-0iv2gg',
+        layout: {
+            'text-field': 'Territorial Sea Area',
+            'text-font': ['Open Sans Bold', 'Arial Unicode MS Bold'],
+            'text-size': 11,
+            'symbol-placement': 'line', // Places the text along the line
+            'text-rotation-alignment': 'map', // Aligns text with the map's orientation
+            'symbol-spacing': 300, // Spacing between repeated text labels
+        },
+        paint: {
+            'text-color': '#920094',
+            'text-halo-color': '#ffffff',
+            'text-halo-width': 1
+        },
+        minzoom: 4
     });
 
     // Load the icon

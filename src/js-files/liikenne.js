@@ -268,6 +268,9 @@ export const loadLiikenne = async (map) => {
             750,
             25    // Adjusted smaller circle radius from 40
           ]
+        },
+        layout: {
+          visibility: 'visible'
         }
       });
       
@@ -279,7 +282,9 @@ export const loadLiikenne = async (map) => {
         layout: {
           'text-field': '{point_count_abbreviated}',
           'text-font': ['Arial Unicode MS Bold'],
-          'text-size': 11
+          'text-size': 11,
+          'text-allow-overlap': true,
+          visibility: 'visible'
         },
         paint: {
           'text-color': '#FFFFFF' // Set text color here
@@ -298,7 +303,8 @@ export const loadLiikenne = async (map) => {
           'icon-image': ['get', 'icon'],
           'icon-size': 0.1,
           'icon-allow-overlap': true,
-          'icon-rotate': ['get', 'heading']
+          'icon-rotate': ['get', 'heading'],
+          visibility: 'visible'
         }
       });
     }

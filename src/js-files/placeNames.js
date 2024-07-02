@@ -42,7 +42,29 @@ const loadGeoJsonData = (map, url, sourceId, textColor, minZoom) => {
     });
 };
 
-const loadHarbourData = (map) => {
+export const loadPlaceNames = (map) => {
+
+  // Attribution
+  const attributionControl = document.querySelector('.mapboxgl-ctrl-attrib-inner');
+  if (attributionControl) {
+    const customAttribution = document.createElement('a');
+    customAttribution.href = 'https://www.maanmittauslaitos.fi/kartat-ja-paikkatieto/aineistot-ja-rajapinnat/tuotekuvaukset/nimisto';
+    customAttribution.target = '_blank'; // new tab
+    customAttribution.innerHTML = ' © Maanmittauslaitos nimistö & vesikivet 2024';
+    attributionControl.appendChild(customAttribution);
+  }
+
+  // Load saaretGeoJSON
+  loadGeoJsonData(map, saaretGeoJSON, 'saariTaiLuoto', '#333', 10); // black text
+
+  // Load lautatGeoJSON
+  loadGeoJsonData(map, lautatGeoJSON, 'lauttaJaLossi', '#CC5500', 10); // orange text
+
+  // Load merialueetGeoJSON
+  loadGeoJsonData(map, merialueetGeoJSON, 'merialueet', '#0000FF', 10); // blue text
+};
+
+export const loadHarbours = (map) => {
   const url = 'https://geoserver2.ymparisto.fi/geoserver/meritietoportaali/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=meritietoportaali:satamat';
 
   fetch(url)
@@ -103,7 +125,7 @@ const loadHarbourData = (map) => {
             'icon-size': 0.2,
             'icon-allow-overlap': true,
             'icon-anchor': 'bottom',
-            visibility: 'none'
+            visibility: 'visible'
           }
         });
 
@@ -133,30 +155,4 @@ const loadHarbourData = (map) => {
     .catch(error => {
       console.error('Error loading harbour data:', error);
     });
-};
-
-
-export const loadPlaceNames = (map) => {
-
-  // Attribution
-  const attributionControl = document.querySelector('.mapboxgl-ctrl-attrib-inner');
-  if (attributionControl) {
-    const customAttribution = document.createElement('a');
-    customAttribution.href = 'https://www.maanmittauslaitos.fi/kartat-ja-paikkatieto/aineistot-ja-rajapinnat/tuotekuvaukset/nimisto';
-    customAttribution.target = '_blank'; // new tab
-    customAttribution.innerHTML = ' © Maanmittauslaitos nimistö & vesikivet 2024';
-    attributionControl.appendChild(customAttribution);
-  }
-
-  // Load saaretGeoJSON
-  loadGeoJsonData(map, saaretGeoJSON, 'saariTaiLuoto', '#333', 10); // black text
-
-  // Load lautatGeoJSON
-  loadGeoJsonData(map, lautatGeoJSON, 'lauttaJaLossi', '#CC5500', 10); // orange text
-
-  // Load merialueetGeoJSON
-  loadGeoJsonData(map, merialueetGeoJSON, 'merialueet', '#0000FF', 10); // blue text
-
-  // Load harbour data
-  loadHarbourData(map);
 };

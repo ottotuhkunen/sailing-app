@@ -251,8 +251,17 @@ p {
   width: 100%;
 }
 
+.nav-button img {
+  filter: brightness(0) saturate(100%) invert(100%) sepia(100%) saturate(20000%) hue-rotate(90deg);
+  transition: filter 0.3s ease;
+}
+
 .inactiveButton {
   background: none !important;
+}
+
+.inactiveButton img {
+  filter: none !important;
 }
 
 .map-info-overlay {

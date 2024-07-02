@@ -8,12 +8,10 @@ import { loadSektoritJaLinjat } from './js-files/sektoritJaLinjat';
 import { loadAlueet } from './js-files/alueet';
 import { loadVaylat } from './js-files/vaylat';
 import { loadRace } from './js-files/reitti';
-import { loadLiikenne } from './js-files/liikenne';
 import { loadPlaceNames } from './js-files/placeNames';
 import { initializeLine, drawLine, clearLine } from './js-files/line';
 import { loadSoundingPoints } from './js-files/sounding';
 import { loadDepthContours } from './js-files/sounding';
-import { loadVesiliikennemerkit } from './js-files/vesiliikennemerkit'; 
 // import { loadWeather } from './js-files/weather';
 import MapInformation from './js-files/mapInformation'; 
 
@@ -45,13 +43,12 @@ function App() {
       loadDepthContours(mapInstanceRef.current);
       setMapLoaded(true);
       loadVaylat(mapInstanceRef.current);
-      // loadRace(mapInstanceRef.current);
-      loadLiikenne(mapInstanceRef.current);
       loadPlaceNames(mapInstanceRef.current);
       loadAlueet(mapInstanceRef.current);
       loadSektoritJaLinjat(mapInstanceRef.current);
       loadSoundingPoints(mapInstanceRef.current);
-      loadVesiliikennemerkit(mapInstanceRef.current);
+
+      // loadRace(mapInstanceRef.current);
       // loadWeather(mapInstanceRef.current, selectedDataType);
       
       mapInstanceRef.current.addControl(new mapboxgl.NavigationControl());

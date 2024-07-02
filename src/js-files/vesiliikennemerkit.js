@@ -92,20 +92,6 @@ const restrictionColors = {
     '11': '#800080', // Nopeussuositus
 };
 
-const restrictionDescriptions = {
-    '01': 'Nopeusrajoitus',
-    '02': 'Aallokon aiheuttamisen kielto',
-    '03': 'Purjelautailukielto',
-    '04': 'Vesiskootterilla ajo kielletty',
-    '05': 'Aluksen kulku moottorivoimaa käyttäen kielletty',
-    '06': 'Ankkurin käyttökielto',
-    '07': 'Pysäköimiskielto',
-    '08': 'Kiinnittymiskielto',
-    '09': 'Ohittamiskielto',
-    '10': 'Kohtaamiskielto',
-    '11': 'Nopeussuositus',
-};
-
 export const loadVesiliikennemerkit = async (mapInstance) => {
     // Function to load images
     const loadImage = (url) => {
@@ -165,7 +151,7 @@ export const loadVesiliikennemerkit = async (mapInstance) => {
             'text-justify': 'center',
             'text-anchor': 'center',
             'text-allow-overlap': false,
-            visibility: 'none'
+            visibility: 'visible'
         },
         paint: {
             'text-color': 'black'
@@ -239,35 +225,34 @@ export const loadVesiliikennemerkit = async (mapInstance) => {
             'fill-outline-color': '#df34c8'
         },
         layout: {
-            visibility: 'none'
+            visibility: 'visible'
         },
         minzoom: 4
     });
     
-    // Add click event listener for vesiliikennemerkit-alueet
-    mapInstance.on('click', 'vesiliikennemerkit-alueet', function (e) {
-        const properties = e.features[0].properties;
-        const rajoitustyypit = properties.rajoitustyypit.split(',')[0]; // Get the first restriction type
-
-        console.log(rajoitustyypit);
-        const rajoitustyyppiSelite = restrictionDescriptions[rajoitustyypit];
-        const suuruus = properties.suuruus !== 0 ? properties.suuruus : '';
-    
-        const popupContent = `<strong>${rajoitustyyppiSelite}</strong>${suuruus ? ` ${suuruus}` : ''}`;
-        new mapboxgl.Popup()
-            .setLngLat(e.lngLat)
-            .setHTML(popupContent)
-            .addTo(mapInstance);
+    // Add vesiliikennemerkit-alueet text
+    mapInstance.addLayer({
+        id: 'vesiliikennemerkit-alueet-labels',
+        type: 'symbol',
+        source: {
+            type: 'vector',
+            url: 'mapbox://ottotuhkunen.8win2rf7'
+        },
+        'source-layer': 'rajoitusalueet-8ocmdx',
+        layout: {
+            'text-field': ['get', 'rajoitustyyppi_selite'],
+            'text-font': ['Open Sans Bold', 'Arial Unicode MS Bold'],
+            'text-size': 11,
+            'symbol-placement': 'point', 
+            'text-rotation-alignment': 'map',
+            'text-allow-overlap': false,
+            'visibility': 'visible'
+        },
+        paint: {
+            'text-color': 'darkred',
+            'text-halo-color': '#ffffff',
+            'text-halo-width': 1
+        },
+        minzoom: 10
     });
-    
-    
-    mapInstance.on('mouseenter', 'vesiliikennemerkit-alueet', function () {
-        mapInstance.getCanvas().style.cursor = 'pointer';
-    });
-    mapInstance.on('mouseleave', 'vesiliikennemerkit-alueet', function () {
-        mapInstance.getCanvas().style.cursor = '';
-    });
-
-
-
 };
