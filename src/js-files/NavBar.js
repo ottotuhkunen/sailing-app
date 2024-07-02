@@ -9,6 +9,7 @@ const NavBar = ({ map }) => {
     toggleReittiButton: true,
     toggleLiikenneButton: true,
     toggleSoundingButton: true,
+    toggleLiikennemerkitButton: false,
     toggleharboursButton: false
   });
 

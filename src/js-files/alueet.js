@@ -219,41 +219,73 @@ export const loadAlueet = (map) => {
         minzoom: 11
     });
 
-        // get territorial sea area from Mapbox tilesets
+    // get territorial sea area from Mapbox tilesets
+    map.addLayer({
+        id: 'territorial-sea-area',
+        type: 'fill',
+        source: {
+            type: 'vector',
+            url: 'mapbox://ottotuhkunen.2zdttf0d'
+        },
+        'source-layer': 'territorialSeaArea-0iv2gg',
+        paint: {
+            'fill-color': '#df34c8',
+            'fill-opacity': 0.3,
+            'fill-outline-color': '#df34c8'
+        },
+        layout: {
+            visibility: 'visible'
+        },
+        minzoom: 4
+    });
+    
+    // Add click event listener for the territorial sea area layer
+    map.on('click', 'territorial-sea-area', function (e) {
+        new mapboxgl.Popup()
+            .setLngLat(e.lngLat)
+            .setHTML('<strong>Finland Territorial Sea Area</strong>')
+            .addTo(map);
+    });
+    
+    // Change the cursor to a pointer when the mouse is over the territorial sea area layer
+    map.on('mouseenter', 'territorial-sea-area', function () {
+        map.getCanvas().style.cursor = 'pointer';
+    });
+    
+    // Change the cursor back to the default when the mouse leaves the territorial sea area layer
+    map.on('mouseleave', 'territorial-sea-area', function () {
+        map.getCanvas().style.cursor = '';
+    });
+
+    // Load the icon
+    map.loadImage(`${process.env.PUBLIC_URL}/src/icons/kaislikko.png`, (error, image) => {
+        if (error) throw error;
+
+        // Add the icon to the map style
+        map.addImage('kaislikko-icon', image);
+
+        // Add kaislikot layer
         map.addLayer({
-            id: 'territorial-sea-area',
-            type: 'fill',
+            id: 'kaislikot-layer',
+            type: 'symbol',
             source: {
                 type: 'vector',
-                url: 'mapbox://ottotuhkunen.2zdttf0d'
+                url: 'mapbox://ottotuhkunen.3gsp5fkv'
             },
-            'source-layer': 'territorialSeaArea-0iv2gg',
-            paint: {
-                'fill-color': '#df34c8',
-                'fill-opacity': 0.3,
-                'fill-outline-color': '#df34c8'
-            },
+            'source-layer': 'kaislikot-79yzm5',
             layout: {
+                'icon-image': 'kaislikko-icon', // Use the icon loaded above
+                'icon-size': 0.3, // Adjust the size as needed
+                'icon-anchor': 'bottom',
+                'icon-allow-overlap': false,
                 visibility: 'visible'
             },
-            minzoom: 4
+            paint: {
+                'icon-color': 'black'
+            },
+            minzoom: 12
         });
-        
-        // Add click event listener for the territorial sea area layer
-        map.on('click', 'territorial-sea-area', function (e) {
-            new mapboxgl.Popup()
-                .setLngLat(e.lngLat)
-                .setHTML('<strong>Finland Territorial Sea Area</strong>')
-                .addTo(map);
-        });
-        
-        // Change the cursor to a pointer when the mouse is over the territorial sea area layer
-        map.on('mouseenter', 'territorial-sea-area', function () {
-            map.getCanvas().style.cursor = 'pointer';
-        });
-        
-        // Change the cursor back to the default when the mouse leaves the territorial sea area layer
-        map.on('mouseleave', 'territorial-sea-area', function () {
-            map.getCanvas().style.cursor = '';
-        });        
+    });
+
+
 };

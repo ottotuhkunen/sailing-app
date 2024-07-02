@@ -78,6 +78,34 @@ const merkkiMapping = {
     34: 'Johdon suuntamerkki ylempi'
 };
 
+const restrictionColors = {
+    '01': '#ff0000', // Nopeusrajoitus
+    '02': '#00ff00', // Aallokon aiheuttamisen kielto
+    '03': '#0000ff', // Purjelautailukielto
+    '04': '#ffff00', // Vesiskootterilla ajo kielletty
+    '05': '#ff00ff', // Aluksen kulku moottorivoimaa käyttäen kielletty
+    '06': '#00ffff', // Ankkurin käyttökielto
+    '07': '#800000', // Pysäköimiskielto
+    '08': '#008000', // Kiinnittymiskielto
+    '09': '#000080', // Ohittamiskielto
+    '10': '#808000', // Kohtaamiskielto
+    '11': '#800080', // Nopeussuositus
+};
+
+const restrictionDescriptions = {
+    '01': 'Nopeusrajoitus',
+    '02': 'Aallokon aiheuttamisen kielto',
+    '03': 'Purjelautailukielto',
+    '04': 'Vesiskootterilla ajo kielletty',
+    '05': 'Aluksen kulku moottorivoimaa käyttäen kielletty',
+    '06': 'Ankkurin käyttökielto',
+    '07': 'Pysäköimiskielto',
+    '08': 'Kiinnittymiskielto',
+    '09': 'Ohittamiskielto',
+    '10': 'Kohtaamiskielto',
+    '11': 'Nopeussuositus',
+};
+
 export const loadVesiliikennemerkit = async (mapInstance) => {
     // Function to load images
     const loadImage = (url) => {
@@ -181,4 +209,65 @@ export const loadVesiliikennemerkit = async (mapInstance) => {
     mapInstance.on('mouseleave', 'vesiliikennemerkit', () => {
         mapInstance.getCanvas().style.cursor = '';
     });
+
+    // get restriction areas from Mapbox tilesets
+    mapInstance.addLayer({
+        id: 'vesiliikennemerkit-alueet',
+        type: 'fill',
+        source: {
+            type: 'vector',
+            url: 'mapbox://ottotuhkunen.8win2rf7'
+        },
+        'source-layer': 'rajoitusalueet-8ocmdx',
+        paint: {
+            'fill-color': [
+                'case',
+                ['==', ['get', 'rajoitustyypit'], '01'], restrictionColors['01'],
+                ['==', ['get', 'rajoitustyypit'], '02'], restrictionColors['02'],
+                ['==', ['get', 'rajoitustyypit'], '03'], restrictionColors['03'],
+                ['==', ['get', 'rajoitustyypit'], '04'], restrictionColors['04'],
+                ['==', ['get', 'rajoitustyypit'], '05'], restrictionColors['05'],
+                ['==', ['get', 'rajoitustyypit'], '06'], restrictionColors['06'],
+                ['==', ['get', 'rajoitustyypit'], '07'], restrictionColors['07'],
+                ['==', ['get', 'rajoitustyypit'], '08'], restrictionColors['08'],
+                ['==', ['get', 'rajoitustyypit'], '09'], restrictionColors['09'],
+                ['==', ['get', 'rajoitustyypit'], '10'], restrictionColors['10'],
+                ['==', ['get', 'rajoitustyypit'], '11'], restrictionColors['11'],
+                '#ffffff' // default color if none match
+            ],
+            'fill-opacity': 0.3,
+            'fill-outline-color': '#df34c8'
+        },
+        layout: {
+            visibility: 'none'
+        },
+        minzoom: 4
+    });
+    
+    // Add click event listener for vesiliikennemerkit-alueet
+    mapInstance.on('click', 'vesiliikennemerkit-alueet', function (e) {
+        const properties = e.features[0].properties;
+        const rajoitustyypit = properties.rajoitustyypit.split(',')[0]; // Get the first restriction type
+
+        console.log(rajoitustyypit);
+        const rajoitustyyppiSelite = restrictionDescriptions[rajoitustyypit];
+        const suuruus = properties.suuruus !== 0 ? properties.suuruus : '';
+    
+        const popupContent = `<strong>${rajoitustyyppiSelite}</strong>${suuruus ? ` ${suuruus}` : ''}`;
+        new mapboxgl.Popup()
+            .setLngLat(e.lngLat)
+            .setHTML(popupContent)
+            .addTo(mapInstance);
+    });
+    
+    
+    mapInstance.on('mouseenter', 'vesiliikennemerkit-alueet', function () {
+        mapInstance.getCanvas().style.cursor = 'pointer';
+    });
+    mapInstance.on('mouseleave', 'vesiliikennemerkit-alueet', function () {
+        mapInstance.getCanvas().style.cursor = '';
+    });
+
+
+
 };
