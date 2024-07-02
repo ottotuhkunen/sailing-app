@@ -250,7 +250,6 @@ export const loadLiikenne = async (map) => {
       updateVessels(map);
     }, 30000);
 
-    // Add cluster layer
     if (!map.getLayer('liikenne-clusters')) {
       map.addLayer({
         id: 'liikenne-clusters',
@@ -258,19 +257,20 @@ export const loadLiikenne = async (map) => {
         source: 'vessels',
         filter: ['has', 'point_count'],
         paint: {
-          'circle-color': '#51bbd6',
+          'circle-color': '#0C0243',
+          'circle-opacity': 0.7,  // Set opacity to 0.8
           'circle-radius': [
             'step',
             ['get', 'point_count'],
-            20,
+            15,   // Adjusted smaller circle radius from 20
             100,
-            30,
+            20,   // Adjusted smaller circle radius from 30
             750,
-            40
+            25    // Adjusted smaller circle radius from 40
           ]
         }
       });
-
+      
       map.addLayer({
         id: 'liikenne-cluster-count',
         type: 'symbol',
@@ -278,8 +278,11 @@ export const loadLiikenne = async (map) => {
         filter: ['has', 'point_count'],
         layout: {
           'text-field': '{point_count_abbreviated}',
-          'text-font': ['DIN Offc Pro Medium', 'Arial Unicode MS Bold'],
-          'text-size': 12
+          'text-font': ['Arial Unicode MS Bold'],
+          'text-size': 11
+        },
+        paint: {
+          'text-color': '#FFFFFF' // Set text color here
         }
       });
     }

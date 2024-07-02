@@ -13,6 +13,7 @@ import { loadPlaceNames } from './js-files/placeNames';
 import { initializeLine, drawLine, clearLine } from './js-files/line';
 import { loadSoundingPoints } from './js-files/sounding';
 import { loadDepthContours } from './js-files/sounding';
+import { loadVesiliikennemerkit } from './js-files/vesiliikennemerkit'; 
 // import { loadWeather } from './js-files/weather';
 import MapInformation from './js-files/mapInformation'; 
 
@@ -50,6 +51,7 @@ function App() {
       loadAlueet(mapInstanceRef.current);
       loadSektoritJaLinjat(mapInstanceRef.current);
       loadSoundingPoints(mapInstanceRef.current);
+      loadVesiliikennemerkit(mapInstanceRef.current);
       // loadWeather(mapInstanceRef.current, selectedDataType);
       
       mapInstanceRef.current.addControl(new mapboxgl.NavigationControl());
@@ -199,13 +201,7 @@ function App() {
       <button className="map-information-button" onClick={toggleMapInfo}>
         <p>Tietoa</p>
       </button>
-      <div className="data-type-selector">
-        <select id="data-type" value={selectedDataType} onChange={handleDataTypeChange}>
-          <option value="ws_10min">Wind Speed</option>
-          <option value="wg_10min">Maximum Wind Speed</option>
-          {/* Add more options as needed */}
-        </select>
-      </div>
+
       {showMapInfo && <MapInformation onClose={toggleMapInfo} />}
       {info && (
         <div className="info-box">
@@ -221,3 +217,12 @@ function App() {
 }
 
 export default App;
+
+/*
+<div className="data-type-selector">
+  <select id="data-type" value={selectedDataType} onChange={handleDataTypeChange}>
+    <option value="ws_10min">Wind Speed</option>
+    <option value="wg_10min">Maximum Wind Speed</option>}
+    </select>
+    </div>
+*/

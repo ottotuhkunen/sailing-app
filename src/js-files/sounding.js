@@ -8,14 +8,14 @@ export const loadSoundingPoints = (mapInstance) => {
     if (attributionControl) {
         const customAttribution = document.createElement('a');
         customAttribution.href = 'https://www.traficom.fi/fi/ajankohtaista/paikkatietoaineistot/merikartoitusaineistot';
-        customAttribution.target = '_blank'; // new tab
+        customAttribution.target = '_blank';
         customAttribution.innerHTML = ' © Syvyystiedot: Liikenne- ja viestintävirasto. Ei navigointikäyttöön. Ei täytä asianmukaisen merikartan vaatimuksia.';
         attributionControl.appendChild(customAttribution);
     }
 
     mapInstance.addLayer({
         id: 'sounding-points-labels',
-        type: 'symbol', // Use 'symbol' type for text labels
+        type: 'symbol',
         source: {
             type: 'vector',
             url: 'mapbox://ottotuhkunen.65icio6l'

@@ -60,6 +60,13 @@ const NavBar = ({ map }) => {
         <img src={`${process.env.PUBLIC_URL}/src/icons/navbar/sektoriloisto.png`} alt="Sektorit" className="nav-icon" />
       </button>
       <button
+        id="toggleSoundingButton"
+        className={`nav-button ${buttonStates.toggleSoundingButton ? '' : 'inactiveButton'}`}
+        onClick={() => toggleLayer('sounding', 'toggleSoundingButton')}
+      >
+        <img src={`${process.env.PUBLIC_URL}/src/icons/navbar/depthIcon.png`} alt="Syvyys" className="nav-icon" />
+      </button>
+      <button
         id="toggleLiikenneButton"
         className={`nav-button ${buttonStates.toggleLiikenneButton ? '' : 'inactiveButton'}`}
         onClick={() => toggleLayer('liikenne', 'toggleLiikenneButton')}
@@ -67,11 +74,11 @@ const NavBar = ({ map }) => {
         <img src={`${process.env.PUBLIC_URL}/src/icons/navbar/navIcon2.png`} alt="Liikenne" className="nav-icon" />
       </button>
       <button
-        id="toggleSoundingButton"
-        className={`nav-button ${buttonStates.toggleSoundingButton ? '' : 'inactiveButton'}`}
-        onClick={() => toggleLayer('sounding', 'toggleSoundingButton')}
+        id="toggleLiikennemerkitButton"
+        className={`nav-button ${buttonStates.toggleLiikennemerkitButton ? '' : 'inactiveButton'}`}
+        onClick={() => toggleLayer('vesiliikennemerkit', 'toggleLiikennemerkitButton')}
       >
-        <img src={`${process.env.PUBLIC_URL}/src/icons/navbar/depthIcon.png`} alt="Syvyys" className="nav-icon" />
+        <img src={`${process.env.PUBLIC_URL}/src/icons/navbar/waterSigns.png`} alt="Satama" className="nav-icon" />
       </button>
       <button
         id="toggleharboursButton"
